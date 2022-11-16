@@ -25,8 +25,9 @@ public class GenerationScriptV2 : MonoBehaviour
     [SerializeField] public Slider SeedSlider;
     [SerializeField] public Slider StoneSlider;
     [SerializeField] public Slider CaveSlider;
-    public Camera MainCamera;
-    //public Texture2D TestTexure;
+    
+
+    
 
     //int[,] map;
     //int[,] cavemap;
@@ -62,8 +63,9 @@ public class GenerationScriptV2 : MonoBehaviour
         TestTileMap.ClearAllTiles();
         Seed = (float)UnityEngine.Random.Range(0.0f, 1000.0f);
         StoneSeed = (float)UnityEngine.Random.Range(0.0f, 1000.0f);
-        CaveSeed = (float)UnityEngine.Random.Range(0.03f, 0.06f);
+        CaveSeed = (float)UnityEngine.Random.Range(0.02f, 0.05f);
 
+        
         OptimisedTerrainGeneration(worldWidth, worldHeight, GrassSoil, Stone, TestTileMap);
 
         //map = Generate2DArray(worldWidth, worldHeight);
@@ -173,33 +175,36 @@ public class GenerationScriptV2 : MonoBehaviour
     public void OptimisedTerrainGeneration(int worldWidth, int worldHeight, TileBase GrassSoil, TileBase Stone, Tilemap TestTileMap)
     {
         int[,] map = new int[worldWidth, worldHeight];
-        int perlinNoise;
-
+        int perlinNoiseSoil;
+        int perlinNoiseStone;
         for (int x = 0; x < worldWidth; x++)
         {
             //Making the Soil
-            perlinNoise = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * worldHeight / 2);
-            perlinNoise += worldHeight / 2;
-            for (int y = 0; y < perlinNoise; y++)
+            perlinNoiseSoil = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * worldHeight / 5);
+            perlinNoiseSoil += worldHeight / 3;
+            Debug.Log($"Soil Noise Value is {perlinNoiseSoil}");
+            for (int y = 0; y < perlinNoiseSoil; y++)
             {
                 map[x, y] = 1;
             }
 
             //Making the Stone
-            perlinNoise = Mathf.RoundToInt(Mathf.PerlinNoise(x / (Smoothness * 2), StoneSeed) * worldHeight / 3);
-            perlinNoise += (worldHeight / 4);
-            for (int y = 0; y < perlinNoise; y++)
+            perlinNoiseStone = Mathf.RoundToInt(Mathf.PerlinNoise(x / (Smoothness * 2), StoneSeed) * worldHeight / 8);
+            perlinNoiseStone += worldHeight / 4;
+            Debug.Log($"Stone Noise Value is {perlinNoiseStone}");
+            for (int y = 0; y < perlinNoiseStone; y++)
             {
                 map[x, y] = 2;
             }
             
             //Cutting Cacves out and Rendering to Optimise the code using the same for loops
-            for (int y = 0; y < worldHeight; y++)
+            for (int y = 0; y < perlinNoiseSoil; y++)
             {
                 float v = Mathf.PerlinNoise((float)x * CaveSeed, (float)y * CaveSeed);
+
                 if (v >= CaveThreshhold)
                 {
-                    map[x, y] = 0;
+                   map[x, y] = 0;
                 }
                 if (map[x, y] == 1)
                 {
@@ -210,9 +215,10 @@ public class GenerationScriptV2 : MonoBehaviour
                     TestTileMap.SetTile(new Vector3Int(x, y, 0), Stone);
                 }
             }
+            
         }
     }
 
     
-
+    
 }
