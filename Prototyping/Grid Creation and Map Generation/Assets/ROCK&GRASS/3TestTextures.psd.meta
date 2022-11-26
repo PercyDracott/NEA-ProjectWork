@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 26434916e28461a44811a23fa7ccaf65
+guid: e43ee53167ed369479df73c91b6e46ea
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 4
+  spritePixelsToUnits: 8
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -70,7 +70,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -110,8 +110,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 4
-        height: 4
+        width: 8
+        height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 06a3d8384f301314ea57cf061541e4d4
-      internalID: -2110026509
+      spriteID: aaae4f4aa00660043822893cd36afb12
+      internalID: -708274638
       vertices: []
       indices: 
       edges: []
@@ -129,10 +129,10 @@ TextureImporter:
       name: 3TestTextures_1
       rect:
         serializedVersion: 2
-        x: 4
+        x: 8
         y: 0
-        width: 4
-        height: 4
+        width: 8
+        height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 509da4585e824b340b223d09e976d176
-      internalID: -1641752694
+      spriteID: 350fe9d2e1b273f4985fe873490428b3
+      internalID: -416939656
       vertices: []
       indices: 
       edges: []
@@ -150,10 +150,10 @@ TextureImporter:
       name: 3TestTextures_2
       rect:
         serializedVersion: 2
-        x: 8
+        x: 16
         y: 0
-        width: 4
-        height: 4
+        width: 8
+        height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,8 +161,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9d582af2201ef6342b163433c10a0e28
-      internalID: 1578068297
+      spriteID: dbe97371b448cf04d8af9167a891376d
+      internalID: 1531978609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 3TestTextures_3
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 0
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98b111ce02f681443a89900f9d262048
+      internalID: -29320941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 3TestTextures_4
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e56546cb201587b44bf3f7156c9d82f0
+      internalID: 963812486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 3TestTextures_5
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 0
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8e4d5e282286c84094aec1c2db3d939
+      internalID: -934122837
       vertices: []
       indices: 
       edges: []
@@ -178,9 +241,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      3TestTextures_1: -1641752694
-      3TestTextures_0: -2110026509
-      3TestTextures_2: 1578068297
+      3TestTextures_3: -29320941
+      3TestTextures_1: -416939656
+      3TestTextures_4: 963812486
+      3TestTextures_0: -708274638
+      3TestTextures_5: -934122837
+      3TestTextures_2: 1531978609
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 1

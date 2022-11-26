@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
   m_Name: SoilRT
   m_EditorClassIdentifier: 
-  m_DefaultSprite: {fileID: -1641752694, guid: 26434916e28461a44811a23fa7ccaf65, type: 3}
+  m_DefaultSprite: {fileID: -708274638, guid: e43ee53167ed369479df73c91b6e46ea, type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules:
   - m_Id: 0
     m_Sprites:
-    - {fileID: -2110026509, guid: 26434916e28461a44811a23fa7ccaf65, type: 3}
+    - {fileID: -708274638, guid: e43ee53167ed369479df73c91b6e46ea, type: 3}
     m_GameObject: {fileID: 0}
     m_MinAnimationSpeed: 1
     m_MaxAnimationSpeed: 1
@@ -32,7 +32,7 @@ MonoBehaviour:
     m_RuleTransform: 0
   - m_Id: 1
     m_Sprites:
-    - {fileID: -1641752694, guid: 26434916e28461a44811a23fa7ccaf65, type: 3}
+    - {fileID: -416939656, guid: e43ee53167ed369479df73c91b6e46ea, type: 3}
     m_GameObject: {fileID: 0}
     m_MinAnimationSpeed: 1
     m_MaxAnimationSpeed: 1

@@ -10,54 +10,80 @@ public class Generator : MonoBehaviour
     [SerializeField] int worldWidth;
     [SerializeField] int worldHeight;
     [SerializeField] float Seed;
-    [SerializeField] float Smoothness;
+    [SerializeField] float RandomPercentFill;
     [SerializeField] TileBase TestTile;
     [SerializeField] Tilemap TestTileMap;
-
+    [SerializeField] int Iterations;
     int[,] map;
 
-    void Start()
-    {
-        Generation();
-    }
 
-    void Generation()
+    public void Generation()
     {
-        TestTileMap.ClearAllTiles();
-        Seed = (float)UnityEngine.Random.Range(0.0f,5.0f);
-        map = GenerateNoiseTexture(worldWidth, worldHeight, true);
-        map = TerrainGeneration(map);
-        Renderer(map, TestTile, TestTileMap);
-    }
-
-    public int[,] GenerateNoiseTexture(int worldWidth, int worldHeight, bool empty)
-    {
-        int[,] map = new int[worldWidth, worldHeight];
+        map = new int[worldWidth, worldHeight];
         for (int x = 0; x < worldWidth; x++)
         {
             for (int y = 0; y < worldHeight; y++)
             {
-                if (empty) map[x, y] = 0;
-                else map[x, y] = 1;                        
+                map[x, y] = Random.Range(0, 100) < RandomPercentFill ? 1 : 0;
             }
         }
-        return map;
     }
 
-    public int[,] TerrainGeneration(int[,] map)
+    public void Automata(int[,] map, int count)
     {
-        int perlinNoise;
-        for(int x = 0; x < worldWidth; x++)
+        for (int i = 1; i <= count; i++)
         {
-            perlinNoise = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * worldHeight / 2);
-            perlinNoise += worldHeight / 2;
-            for (int y = 0; y < perlinNoise; y++)
+            int[,] tempmap = (int[,])map.Clone();
+            //Debug.Log(tempmap.GetLength(0));
+            //Debug.Log(tempmap.GetLength(1));
+
+            for (int xs = 1; xs < worldWidth-1; xs++)
             {
-                map[x, y] = 1;
+                for (int ys = 1; ys < worldHeight-1; ys++)
+                {
+                    int neighbours = 0;
+                    neighbours = GetNeighbours(tempmap, xs, ys, neighbours);
+                    if (neighbours > 4)
+                    {
+                        map[xs, ys] = 1;
+                    }
+                    else
+                    {
+                        map[xs, ys] = 0;
+                    }
+                }
             }
         }
-        return map;
     }
+
+    private int GetNeighbours(int[,] tempmap, int xs, int ys, int neighbours)
+    {
+        for (int x = xs - 1; x <= xs + 1; x++)
+        {
+            for (int y = ys - 1; y <= ys + 1; y++)
+            {
+                if (y <= worldHeight && x <= worldWidth)
+                {
+                    if (y != ys || x != xs)
+                    {
+                        //Debug.Log(y);
+                        //Debug.Log(x);
+                        if (tempmap[x, y] == 1)
+                        {
+                            neighbours++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return neighbours;
+    }
+
+    //int neighbours()
+    //{
+    //    return map.GetLength(0);
+    //}
 
     public void Renderer(int[,] map, TileBase TestTile , Tilemap TestTileMap)
     {
@@ -65,7 +91,11 @@ public class Generator : MonoBehaviour
         {
             for (int y = 0; y < worldHeight; y++)
             {
-                if (map[x,y] == 1)
+                if (x == 0 || y == 0 || x == worldWidth - 1 || y == worldHeight - 1)
+                {
+                    TestTileMap.SetTile(new Vector3Int(x, y, 0), TestTile);
+                }
+                else if (map[x,y] == 1)
                 {
                     TestTileMap.SetTile(new Vector3Int(x, y, 0), TestTile);
                 }
@@ -73,12 +103,16 @@ public class Generator : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        TestTileMap.ClearAllTiles();
+        Generation();
+        Automata(map, Iterations);
+        Renderer(map, TestTile, TestTileMap);
+    }
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Generation();
-        }
+        
     }
 }

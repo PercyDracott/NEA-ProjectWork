@@ -13,29 +13,38 @@ public class GenerationScriptV2 : MonoBehaviour
     public int worldHeight;
     [SerializeField] float Seed;
     [SerializeField] float StoneSeed;
-    [SerializeField] float CaveSeed;
-    [SerializeField] float Smoothness;
-    [SerializeField] float CaveThreshhold;
+    //[SerializeField] float CaveSeed;
+    [SerializeField] float OreSeed;
+
+    float Smoothness = 40;
+    float OreThreshhold = 0.1f;
+    //float CaveThreshhold = 0.7f;
     
     
     [SerializeField] TileBase GrassSoil;
     [SerializeField] TileBase Stone;
-    [SerializeField] Tilemap TestTileMap;
+    [SerializeField] TileBase SoilBG;
+    [SerializeField] TileBase StoneBG;
+    [SerializeField] TileBase Ore;
+
+    [SerializeField] Tilemap TestTileFG;
+    [SerializeField] Tilemap TestTileBG;
 
     [SerializeField] public Slider SeedSlider;
     [SerializeField] public Slider StoneSlider;
-    [SerializeField] public Slider CaveSlider;
-    
+    //[SerializeField] public Slider CaveSlider;
 
-    
+    [SerializeField] float RandomPercentFill;
+    [SerializeField] int iterations;
 
-    //int[,] map;
-    //int[,] cavemap;
+    int[,] map;
+    int[,] cavemap;
+    
 
     void Start()
     {
-        Generation();
         
+        Generation();
     }
 
     //void Update()
@@ -52,21 +61,26 @@ public class GenerationScriptV2 : MonoBehaviour
     {
         Seed = SeedSlider.value;
         StoneSeed = StoneSlider.value;
-        CaveSeed = CaveSlider.value;
-
-        TestTileMap.ClearAllTiles();
-        OptimisedTerrainGeneration(worldWidth, worldHeight, GrassSoil, Stone, TestTileMap);
+        //CaveSeed = CaveSlider.value;
+        
+        map = new int[worldWidth, worldHeight];
+        OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
+        ApplyCaves(map);
     }
 
     public void Generation()
     {
-        TestTileMap.ClearAllTiles();
+        
+        TestTileBG.ClearAllTiles();
+        TestTileFG.ClearAllTiles();
         Seed = (float)UnityEngine.Random.Range(0.0f, 1000.0f);
         StoneSeed = (float)UnityEngine.Random.Range(0.0f, 1000.0f);
-        CaveSeed = (float)UnityEngine.Random.Range(0.02f, 0.05f);
+        //CaveSeed = (float)UnityEngine.Random.Range(0.02f, 0.05f);
+        OreSeed = (float)UnityEngine.Random.Range(0.03f, 0.05f);
 
-        
-        OptimisedTerrainGeneration(worldWidth, worldHeight, GrassSoil, Stone, TestTileMap);
+        map = new int[worldWidth, worldHeight];
+        OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
+        ApplyCaves(map);
 
         //map = Generate2DArray(worldWidth, worldHeight);
         //cavemap = GenerateCaveMap(worldWidth, worldHeight);
@@ -172,53 +186,156 @@ public class GenerationScriptV2 : MonoBehaviour
     /// <param name="GrassSoil"></param>
     /// <param name="Stone"></param>
     /// <param name="TestTileMap"></param>
-    public void OptimisedTerrainGeneration(int worldWidth, int worldHeight, TileBase GrassSoil, TileBase Stone, Tilemap TestTileMap)
+    public void OptimisedTerrainGeneration(int[,] WorldMap, int width, int height, TileBase GrassSoil, TileBase Stone)
     {
-        int[,] map = new int[worldWidth, worldHeight];
         int perlinNoiseSoil;
         int perlinNoiseStone;
-        for (int x = 0; x < worldWidth; x++)
+        for (int x = 0; x < width; x++)
         {
             //Making the Soil
-            perlinNoiseSoil = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * worldHeight / 5);
-            perlinNoiseSoil += worldHeight / 3;
-            Debug.Log($"Soil Noise Value is {perlinNoiseSoil}");
+            perlinNoiseSoil = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * height / 5);
+            perlinNoiseSoil += height / 3;
+            //Debug.Log($"Soil Noise Value is {perlinNoiseSoil}");
             for (int y = 0; y < perlinNoiseSoil; y++)
             {
-                map[x, y] = 1;
+                WorldMap[x, y] = 1;
             }
 
             //Making the Stone
-            perlinNoiseStone = Mathf.RoundToInt(Mathf.PerlinNoise(x / (Smoothness * 2), StoneSeed) * worldHeight / 8);
-            perlinNoiseStone += worldHeight / 4;
-            Debug.Log($"Stone Noise Value is {perlinNoiseStone}");
+            perlinNoiseStone = Mathf.RoundToInt(Mathf.PerlinNoise(x / (Smoothness * 2), StoneSeed) * height / 8);
+            perlinNoiseStone += height / 4;
+            //Debug.Log($"Stone Noise Value is {perlinNoiseStone}");
             for (int y = 0; y < perlinNoiseStone; y++)
             {
-                map[x, y] = 2;
+                WorldMap[x, y] = 2;
             }
             
             //Cutting Cacves out and Rendering to Optimise the code using the same for loops
             for (int y = 0; y < perlinNoiseSoil; y++)
             {
-                float v = Mathf.PerlinNoise((float)x * CaveSeed, (float)y * CaveSeed);
+                float OrePL = (Mathf.PerlinNoise((float)x * OreSeed, (float)y * OreSeed));
 
-                if (v >= CaveThreshhold)
+                if (WorldMap[x, y] == 1)
                 {
-                   map[x, y] = 0;
+                    TestTileFG.SetTile(new Vector3Int(x, y, 0), GrassSoil);
+                    TestTileBG.SetTile(new Vector3Int(x, y, 0), SoilBG);
                 }
-                if (map[x, y] == 1)
+                if (WorldMap[x, y] == 2)
                 {
-                    TestTileMap.SetTile(new Vector3Int(x, y, 0), GrassSoil);
+                    TestTileFG.SetTile(new Vector3Int(x, y, 0), Stone);
+                    TestTileBG.SetTile(new Vector3Int(x, y, 0), StoneBG);
                 }
-                if (map[x, y] == 2)
+                if (OrePL <= OreThreshhold)
                 {
-                    TestTileMap.SetTile(new Vector3Int(x, y, 0), Stone);
+                    map[x, y] = 3;
+                    TestTileFG.SetTile(new Vector3Int(x, y, 0), Ore);
                 }
+
             }
             
         }
     }
 
-    
-    
+    /// <summary>
+    /// Made to Enable me to edit the Cave Generation without messing around with the other parts of the code, however this is less optimised as the loops have to be run in addition to the main generation.
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    public void ApplyCaves(int[,] map)
+    {
+        //Version 1
+        //for (int x = 0; x < width; x++)
+        //{
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        float CavePL = (Mathf.PerlinNoise((float)x * CaveSeed, (float)y * CaveSeed));
+        //        if (CavePL >= CaveThreshhold)
+        //        {
+        //            map[x, y] = 0;
+        //            TestTileFG.SetTile(new Vector3Int(x, y, 0), null);
+        //        }
+        //    }
+        //}
+
+        //Version 2 With Automata
+        CaveGeneration();
+        Automata(iterations);
+
+        for (int x = 0; x < worldWidth; x++)
+        {
+            for (int y = 0; y < worldHeight; y++)
+            {
+                if (cavemap[x, y] == 0 && y != 0)
+                {
+                    TestTileFG.SetTile(new Vector3Int(x, y, 0), null);
+                    map[x, y] = 0;
+                }
+            }
+        }
+    }
+
+    public void CaveGeneration()
+    {
+        cavemap = new int[worldWidth, worldHeight];
+        for (int x = 0; x < worldWidth; x++)
+        {
+            for (int y = 0; y < worldHeight; y++)
+            {
+                cavemap[x, y] = UnityEngine.Random.Range(0, 100) < RandomPercentFill ? 1 : 0;
+            }
+        }
+    }
+
+    public void Automata(int count)
+    {
+        for (int i = 1; i <= count; i++)
+        {
+            int[,] tempmap = (int[,])cavemap.Clone();
+            //Debug.Log(tempmap.GetLength(0));
+            //Debug.Log(tempmap.GetLength(1));
+
+            for (int xs = 1; xs < worldWidth - 1; xs++)
+            {
+                for (int ys = 1; ys < worldHeight - 1; ys++)
+                {
+                    int neighbours = 0;
+                    neighbours = GetNeighbours(tempmap, xs, ys, neighbours);
+                    if (neighbours > 4)
+                    {
+                        cavemap[xs, ys] = 1;
+                    }
+                    else
+                    {
+                        cavemap[xs, ys] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    private int GetNeighbours(int[,] tempmap, int xs, int ys, int neighbours)
+    {
+        for (int x = xs - 1; x <= xs + 1; x++)
+        {
+            for (int y = ys - 1; y <= ys + 1; y++)
+            {
+                if (y <= worldHeight && x <= worldWidth)
+                {
+                    if (y != ys || x != xs)
+                    {
+                        //Debug.Log(y);
+                        //Debug.Log(x);
+                        if (tempmap[x, y] == 1)
+                        {
+                            neighbours++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return neighbours;
+    }
+
 }
