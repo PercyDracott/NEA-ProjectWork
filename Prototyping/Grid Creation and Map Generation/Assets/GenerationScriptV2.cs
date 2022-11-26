@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -37,6 +38,8 @@ public class GenerationScriptV2 : MonoBehaviour
     [SerializeField] float RandomPercentFill;
     [SerializeField] int iterations;
 
+    [SerializeField] string Filename;
+
     int[,] map;
     int[,] cavemap;
     
@@ -66,6 +69,7 @@ public class GenerationScriptV2 : MonoBehaviour
         map = new int[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
         ApplyCaves(map);
+        Renderer(map, TestTileFG, TestTileBG);
     }
 
     public void Generation()
@@ -81,6 +85,7 @@ public class GenerationScriptV2 : MonoBehaviour
         map = new int[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
         ApplyCaves(map);
+        Renderer(map, TestTileFG, TestTileBG);
 
         //map = Generate2DArray(worldWidth, worldHeight);
         //cavemap = GenerateCaveMap(worldWidth, worldHeight);
@@ -125,7 +130,7 @@ public class GenerationScriptV2 : MonoBehaviour
     //    }
     //    return cavemap;
     //}
-    
+
     ///// <summary>
     ///// Mathf.PerlinNoise(x,y) -- Takes the X and Y coordinates and produces a smooth random value between 0 and 1
     ///// </summary>
@@ -160,23 +165,75 @@ public class GenerationScriptV2 : MonoBehaviour
     //    return map;
     //}
 
-    //public void Renderer(int[,] map, TileBase GrassSoil, TileBase Stone, Tilemap TestTileMap)
-    //{
-    //    for (int x = 0; x < worldWidth; x++)
-    //    {
-    //        for (int y = 0; y < worldHeight; y++)
-    //        {
-    //            if (map[x, y] == 1 && cavemap[x,y] == 1)
-    //            {
-    //                TestTileMap.SetTile(new Vector3Int(x, y, 0), GrassSoil);
-    //            }
-    //            if (map[x, y] == 2 && cavemap[x, y] == 1)
-    //            {
-    //                TestTileMap.SetTile(new Vector3Int(x, y, 0), Stone);
-    //            }
-    //        }
-    //    }
-    //}
+    public void Renderer(int[,] MapToRender, Tilemap FG, Tilemap BG)
+    {
+        FG.ClearAllTiles();
+        BG.ClearAllTiles();
+        for (int x = 0; x < worldWidth; x++)
+        {
+            for (int y = 0; y < worldHeight; y++)
+            {
+                if (MapToRender[x, y] == 1)
+                {
+                    FG.SetTile(new Vector3Int(x, y, 0), GrassSoil);
+                    BG.SetTile(new Vector3Int(x, y, 0), SoilBG);
+                }
+                if (MapToRender[x, y] == 2)
+                {
+                    FG.SetTile(new Vector3Int(x, y, 0), Stone);
+                    BG.SetTile(new Vector3Int(x, y, 0), StoneBG);
+                }
+                if (MapToRender[x, y] == 3)
+                {
+                    FG.SetTile(new Vector3Int(x, y, 0), Ore);
+                }
+                if (MapToRender[x,y] == 8)
+                {
+                    BG.SetTile(new Vector3Int(x, y, 0), SoilBG);
+                }
+                if (MapToRender[x, y] == 9)
+                {
+                    BG.SetTile(new Vector3Int(x, y, 0), StoneBG);
+                }
+            }
+        }
+    }
+
+    public void SaveMap()
+    {
+        using (StreamWriter sw = new StreamWriter(Filename))
+        {
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    sw.Write(map[x, y]);
+                }
+                sw.WriteLine();
+            }
+        }
+    }
+
+    public void LoadMap()
+    {
+        int y = 0;
+        
+        using (StreamReader sr = new StreamReader(Filename))
+        {
+            string value;
+            
+            while ((value = sr.ReadLine()) != null)
+            {
+                Debug.Log(Convert.ToInt16(value[1]));
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    map[x, y] = Convert.ToInt16(value[x]) - 48;
+                }
+                y++;
+            }
+        }
+        Renderer(map, TestTileFG, TestTileBG);
+    }
 
     /// <summary>
     /// More optimised version of the functions above using a shaired for loop to reduce the number of calls.
@@ -214,17 +271,7 @@ public class GenerationScriptV2 : MonoBehaviour
             for (int y = 0; y < perlinNoiseSoil; y++)
             {
                 float OrePL = (Mathf.PerlinNoise((float)x * OreSeed, (float)y * OreSeed));
-
-                if (WorldMap[x, y] == 1)
-                {
-                    TestTileFG.SetTile(new Vector3Int(x, y, 0), GrassSoil);
-                    TestTileBG.SetTile(new Vector3Int(x, y, 0), SoilBG);
-                }
-                if (WorldMap[x, y] == 2)
-                {
-                    TestTileFG.SetTile(new Vector3Int(x, y, 0), Stone);
-                    TestTileBG.SetTile(new Vector3Int(x, y, 0), StoneBG);
-                }
+                                
                 if (OrePL <= OreThreshhold)
                 {
                     map[x, y] = 3;
@@ -270,8 +317,16 @@ public class GenerationScriptV2 : MonoBehaviour
                 topofworld += worldHeight / 3;
                 if (cavemap[x, y] == 0 && y != 0 && y != topofworld-1 && y != topofworld-2)
                 {
-                    TestTileFG.SetTile(new Vector3Int(x, y, 0), null);
-                    map[x, y] = 0;
+                    //estTileFG.SetTile(new Vector3Int(x, y, 0), null);
+                    if (map[x,y] == 1)
+                    {
+                        map[x, y] = 8;
+                    }
+                    if (map[x, y] == 2 || map[x, y] == 3)
+                    {
+                        map[x, y] = 9;
+                    }
+
                 }
             }
         }
