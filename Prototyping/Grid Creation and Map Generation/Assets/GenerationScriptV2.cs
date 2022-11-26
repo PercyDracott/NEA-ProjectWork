@@ -266,7 +266,9 @@ public class GenerationScriptV2 : MonoBehaviour
         {
             for (int y = 0; y < worldHeight; y++)
             {
-                if (cavemap[x, y] == 0 && y != 0)
+                int topofworld = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * worldHeight / 5);
+                topofworld += worldHeight / 3;
+                if (cavemap[x, y] == 0 && y != 0 && y != topofworld-1 && y != topofworld-2)
                 {
                     TestTileFG.SetTile(new Vector3Int(x, y, 0), null);
                     map[x, y] = 0;

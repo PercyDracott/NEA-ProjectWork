@@ -1970,7 +1970,7 @@ MonoBehaviour:
   SeedSlider: {fileID: 1566909391}
   StoneSlider: {fileID: 11584746}
   RandomPercentFill: 62
-  iterations: 8
+  iterations: 6
 --- !u!4 &1645529104
 Transform:
   m_ObjectHideFlags: 0
