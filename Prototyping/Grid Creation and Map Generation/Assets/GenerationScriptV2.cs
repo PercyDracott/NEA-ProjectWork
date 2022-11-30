@@ -27,6 +27,9 @@ public class GenerationScriptV2 : MonoBehaviour
     [SerializeField] TileBase SoilBG;
     [SerializeField] TileBase StoneBG;
     [SerializeField] TileBase Ore;
+    [SerializeField] TileBase Log;
+    [SerializeField] TileBase Leaf;
+    [SerializeField] TileBase Plank;
 
     [SerializeField] Tilemap TestTileFG;
     [SerializeField] Tilemap TestTileBG;
@@ -37,6 +40,7 @@ public class GenerationScriptV2 : MonoBehaviour
 
     [SerializeField] float RandomPercentFill;
     [SerializeField] int iterations;
+    [SerializeField] int TreePopulation;
 
     [SerializeField] string Filename;
 
@@ -69,6 +73,7 @@ public class GenerationScriptV2 : MonoBehaviour
         map = new int[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
         ApplyCaves(map);
+        AddTrees(TreePopulation, TestTileFG, Log, Leaf);
         Renderer(map, TestTileFG, TestTileBG);
     }
 
@@ -85,6 +90,7 @@ public class GenerationScriptV2 : MonoBehaviour
         map = new int[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
         ApplyCaves(map);
+        AddTrees(TreePopulation, TestTileFG, Log, Leaf);
         Renderer(map, TestTileFG, TestTileBG);
 
         //map = Generate2DArray(worldWidth, worldHeight);
@@ -186,6 +192,18 @@ public class GenerationScriptV2 : MonoBehaviour
                 if (MapToRender[x, y] == 3)
                 {
                     FG.SetTile(new Vector3Int(x, y, 0), Ore);
+                }
+                if (MapToRender[x,y] == 4)
+                {
+                    FG.SetTile(new Vector3Int(x, y, 0), Log);
+                }
+                if (MapToRender[x, y] == 5)
+                {
+                    FG.SetTile(new Vector3Int(x, y, 0), Leaf);
+                }
+                if (MapToRender[x, y] == 6)
+                {
+                    FG.SetTile(new Vector3Int(x, y, 0), Plank);
                 }
                 if (MapToRender[x,y] == 8)
                 {
@@ -393,6 +411,64 @@ public class GenerationScriptV2 : MonoBehaviour
         }
 
         return neighbours;
+    }
+
+    public void AddTrees(int density, Tilemap tilemap, TileBase Log, TileBase Leaf)
+    {
+        if (density >= worldWidth/6)
+        {
+            density = worldWidth / 6;
+        }
+
+        int tempx = 0;
+        int[] positionHistory = new int[density];
+        positionHistory[0] = 0;
+
+        for (int i = 0; i < density; i++)
+        {
+            bool collisionAvoidance = true;
+            while (collisionAvoidance)
+            {
+                int holdingvariable = UnityEngine.Random.Range(2, worldWidth - 2);
+                collisionAvoidance = false;
+
+                for (int j = 0; j <= i; j++)
+                {
+                    if (Mathf.Abs(holdingvariable - positionHistory[j]) < 6)
+                    {
+                        Debug.Log(Mathf.Abs(holdingvariable - positionHistory[j]));
+
+                        collisionAvoidance = true;
+                    }
+                }
+                if (!collisionAvoidance)
+                {
+                    tempx = holdingvariable;
+                }
+            }
+            positionHistory[i] = tempx;
+            
+            //Debug.Log($"tempx is {tempx}");
+            int tempy = worldHeight-1;
+            while (map[tempx,tempy] == 0)
+            {
+                tempy--;
+            }
+            tempy++;
+            //Debug.Log($"tempy is {tempy}");
+
+            map[tempx,tempy] = 4;
+            map[tempx, tempy + 1] = 4;
+            map[tempx, tempy + 2] = 5;
+            map[tempx, tempy + 3] = 5;
+            map[tempx, tempy + 4] = 5;
+            map[tempx + 1, tempy + 2] = 5;
+            map[tempx - 1, tempy + 2] = 5;
+            map[tempx + 1, tempy + 3] = 5;
+            map[tempx - 1, tempy + 3] = 5;
+            map[tempx + 1, tempy + 4] = 5;
+            
+        }
     }
 
 }
