@@ -2325,7 +2325,7 @@ MonoBehaviour:
   RandomPercentFill: 62
   iterations: 6
   TreePopulation: 20
-  Filename: TestFileName
+  Filename: TestFileName.txt
 --- !u!4 &1645529104
 Transform:
   m_ObjectHideFlags: 0
