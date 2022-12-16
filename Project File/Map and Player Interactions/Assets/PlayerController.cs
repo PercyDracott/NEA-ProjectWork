@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float MoveX;
+    public float moveX;
     public float speed;
     public float jumpHeight;
     public bool OnTheGround;
@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayer;
 
     float jumpForce;
-   
+    bool facingRight = true;
 
     // Start is called before the first frame update
     void Start()
@@ -26,16 +26,45 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         OnTheGround = OnGround();
-
-
-        MoveX = Input.GetAxis("Horizontal");
-        Vector3 movement = new Vector3(MoveX, 0, 0);
-        PlayerRB.AddForce(movement * speed);
-
-        jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * PlayerRB.gravityScale));
-
+        xMovePlayer();
         
+        jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * PlayerRB.gravityScale));
+        if (Input.GetKey(KeyCode.Space) && OnGround())
+        {
+            PlayerRB.AddForce(new Vector3(0.0f, jumpForce, 0.0f), ForceMode2D.Impulse);
+        }
 
+
+    }
+
+    void xMovePlayer()
+    {
+        PlayerDirection();
+        moveX = Input.GetAxis("Horizontal");
+        Vector2 movement = new Vector2(moveX, 0);
+        if (OnGround()) PlayerRB.velocity = movement * speed;
+        else if (!OnGround() && moveX != 0) PlayerRB.AddForce(new Vector2(transform.localScale.x, 0));
+    }
+
+    void PlayerDirection()
+    {
+        
+        if (moveX < 0.0f && facingRight)
+        {
+            FlipPlayer();
+        }
+        else if (moveX > 0.0f && !facingRight)
+        {
+            FlipPlayer();
+        }
+    }
+
+    void FlipPlayer()
+    {
+        facingRight = !facingRight;
+        Vector2 localScale = gameObject.transform.localScale;
+        localScale.x *= -1;
+        transform.localScale = localScale;
     }
 
     bool OnGround()
@@ -44,11 +73,5 @@ public class PlayerController : MonoBehaviour
         return Physics2D.OverlapCircle(checkPos, checkradius, groundLayer);
     }
 
-    void FixedUpdate()
-    {
-        if (Input.GetKey(KeyCode.Space) && OnGround())
-        {
-            PlayerRB.AddForce(new Vector3(0.0f, jumpForce, 0.0f), ForceMode2D.Impulse);
-        }
-    }
+    
 }

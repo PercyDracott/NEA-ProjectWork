@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public class BlockInteractions : MonoBehaviour
+{
+    public GameObject MapManagerObject;
+    [SerializeField]
+    Vector2 mousePos;
+    public int block;
+
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (Input.GetMouseButton(0)) Break();
+        if (Input.GetMouseButton(1)) Build(block);
+
+        void Break()
+        {
+            MapManagerObject.GetComponent<GenerationScriptV2>().BreakBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y));
+        }
+
+        void Build(int BlockPassed)
+        {
+            MapManagerObject.GetComponent<GenerationScriptV2>().BuildBlock(BlockPassed, (int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y));
+        }
+    }
+
+}

@@ -364,7 +364,7 @@ GameObject:
   - component: {fileID: 86785888}
   - component: {fileID: 86785886}
   - component: {fileID: 86785887}
-  m_Layer: 1
+  m_Layer: 3
   m_Name: BackGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -475,8 +475,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2127565413
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -1385,7 +1385,7 @@ GameObject:
   - component: {fileID: 1165577642}
   - component: {fileID: 1165577643}
   - component: {fileID: 1165577645}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: ForeGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1496,8 +1496,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -417094825
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -2112,7 +2112,8 @@ GameObject:
   - component: {fileID: 1580298897}
   - component: {fileID: 1580298896}
   - component: {fileID: 1580298895}
-  m_Layer: 6
+  - component: {fileID: 1580298900}
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2133,7 +2134,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.95, y: 1}
   m_Direction: 0
 --- !u!50 &1580298896
 Rigidbody2D:
@@ -2147,14 +2148,14 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 1.5853982
+  m_Mass: 1.5163218
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &1580298897
 MonoBehaviour:
@@ -2168,16 +2169,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717b600a5bafa4458b8ea76ffc235e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveX: 0
-  speed: 1
-  jumpHeight: 5
+  moveX: 0
+  speed: 8
+  jumpHeight: 6
   OnTheGround: 0
   checkradius: 0.01
   PlayerCC: {fileID: 1580298895}
   PlayerRB: {fileID: 1580298896}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 64
 --- !u!212 &1580298898
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2216,8 +2217,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -767381769
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -2245,6 +2246,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1580298900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580298894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596dad14de866ec409540fad1aaedcd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MapManagerObject: {fileID: 1645529102}
+  mousePos: {x: 0, y: 0}
+  block: 0
 --- !u!1 &1586220373
 GameObject:
   m_ObjectHideFlags: 0
