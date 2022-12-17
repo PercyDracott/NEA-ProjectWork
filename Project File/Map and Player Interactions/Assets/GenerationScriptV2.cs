@@ -62,27 +62,31 @@ public class GenerationScriptV2 : MonoBehaviour
     //        Generation();
     //    }
         
-    public void BreakBlock(int x, int y)
+    public int BreakBlock(int x, int y)
     {
         //Debug.Log($"breakblock called, position {x}, {y}");
-        if (!(map[x,y] == 8 || map[x, y] == 9))
+        
+        
+        if (!(map[x, y] == 8 || map[x, y] == 9 || map[x, y] == 0))
         {
-            map[x, y] = 0;
             TestTileFG.SetTile(new Vector3Int(x, y, 0), null);
             TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
+            int block = map[x,y];
+            if (map[x, y] == 1)
+            {
+                map[x, y] = 8;
+            }
+            else if (map[x, y] == 2 || map[x, y] == 3)
+            {
+                map[x, y] = 9;
+            }
+            else map[x, y] = 0;
+            return block;
         }
-        else if (map[x, y] == 1)
-        {
-            map[x, y] = 8;
-        }
-        else if (map[x, y] == 2)
-        {
-            map[x, y] = 9;
-        }
-
+        return 0;
     }
 
-    public void BuildBlock(int block,int x, int y)
+    public bool BuildBlock(int block,int x, int y)
     {
         Debug.Log($"buildblock called, position {x}, {y}");
         if ((map[x-1,y] != 0 || map[x + 1, y] != 0 || map[x, y - 1] != 0 || map[x, y + 1] != 0) && (map[x,y] == 0 || map[x, y] == 8 || map[x, y] == 9))
@@ -107,12 +111,15 @@ public class GenerationScriptV2 : MonoBehaviour
                     placing = Plank;
                     break;
                 default:
-                    break;
+                    return false;
+                    
             }
 
             TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
             TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
+            return true;
         }
+        return false;
     }
 
     //public void BuildBlock(int block, int x, int y)
@@ -250,6 +257,7 @@ public class GenerationScriptV2 : MonoBehaviour
                 if (MapToRender[x, y] == 3)
                 {
                     FG.SetTile(new Vector3Int(x, y, 0), Ore);
+                    BG.SetTile(new Vector3Int(x, y, 0), StoneBG);
                 }
                 if (MapToRender[x,y] == 4)
                 {

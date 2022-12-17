@@ -9,6 +9,9 @@ public class BlockInteractions : MonoBehaviour
     [SerializeField]
     Vector2 mousePos;
     public int block;
+    public int[] inventory = new int[10];
+    
+
 
     void Start()
     {
@@ -24,12 +27,16 @@ public class BlockInteractions : MonoBehaviour
 
         void Break()
         {
-            MapManagerObject.GetComponent<GenerationScriptV2>().BreakBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y));
+            inventory[MapManagerObject.GetComponent<GenerationScriptV2>().BreakBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))]++;
         }
 
         void Build(int BlockPassed)
         {
-            MapManagerObject.GetComponent<GenerationScriptV2>().BuildBlock(BlockPassed, (int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y));
+            if (inventory[BlockPassed] > 0 && MapManagerObject.GetComponent<GenerationScriptV2>().BuildBlock(BlockPassed, (int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y)))
+            {
+                inventory[BlockPassed]--;
+            }
+            
         }
     }
 

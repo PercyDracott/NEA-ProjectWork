@@ -293,111 +293,6 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: 3TestTextures_9
-      rect:
-        serializedVersion: 2
-        x: 72
-        y: 0
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aa4ab3d82a83d4f348c2683c12e65036
-      internalID: -1916627563
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 3TestTextures_10
-      rect:
-        serializedVersion: 2
-        x: 80
-        y: 0
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 46f023d7295ef41d18454c4f41bd15ec
-      internalID: -868804713
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 3TestTextures_11
-      rect:
-        serializedVersion: 2
-        x: 88
-        y: 0
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c9474352b693647338d8b6fe2860cf5e
-      internalID: 1812695162
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 3TestTextures_12
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 0
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b52d69c0468ad4331b8280ce6ba0168f
-      internalID: -477188096
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 3TestTextures_13
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 0
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4c6ff13dae1054b8e925c5dcd48f23e9
-      internalID: -1028291211
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -409,18 +304,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      3TestTextures_13: -1028291211
       3TestTextures_3: -29320941
       3TestTextures_8: 969873438
       3TestTextures_1: -416939656
-      3TestTextures_11: 1812695162
       3TestTextures_4: 963812486
       3TestTextures_0: -708274638
       3TestTextures_5: -934122837
       3TestTextures_7: -339914592
-      3TestTextures_10: -868804713
-      3TestTextures_12: -477188096
-      3TestTextures_9: -1916627563
       3TestTextures_2: 1531978609
       3TestTextures_6: -263909531
   spritePackingTag: 

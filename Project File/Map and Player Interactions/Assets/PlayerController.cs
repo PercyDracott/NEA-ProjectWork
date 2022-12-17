@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public CapsuleCollider2D PlayerCC;
     public Rigidbody2D PlayerRB;
     public LayerMask groundLayer;
+    Animator animator;
 
     float jumpForce;
     bool facingRight = true;
@@ -19,7 +20,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -27,7 +28,9 @@ public class PlayerController : MonoBehaviour
     {
         OnTheGround = OnGround();
         xMovePlayer();
-        
+        PlayerWalkAnimation();
+
+
         jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * PlayerRB.gravityScale));
         if (Input.GetKey(KeyCode.Space) && OnGround())
         {
@@ -71,6 +74,15 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 checkPos = new Vector3(transform.position.x, transform.position.y - PlayerCC.bounds.extents.y, 0);
         return Physics2D.OverlapCircle(checkPos, checkradius, groundLayer);
+    }
+
+    void PlayerWalkAnimation()
+    {
+        if (moveX != 0)
+        {
+            animator.Play("PlayerWalk");
+        }
+        else animator.Play("PlayerIdle");
     }
 
     
