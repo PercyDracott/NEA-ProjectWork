@@ -1,6 +1,7 @@
 using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,9 +12,8 @@ public class HUDManager : MonoBehaviour
     public GameObject Player;
     public UnityEngine.UI.Image Icon;
     public Sprite[] BlockIcons = new Sprite[6];
+    public TextMeshProUGUI quantityText;
     int[] blockKey = { 0 ,1, 2, 4, 5, 6 };
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -26,16 +26,15 @@ public class HUDManager : MonoBehaviour
     {
         MouseScroll();
         SendtoPlayer();
+        QuantityText();
         //Debug.Log(block);
         //Debug.Log("running");
     }
 
     void MouseScroll()
-    {
-
-        scrollPosition += (Mathf.RoundToInt(Input.GetAxisRaw("Mouse ScrollWheel") * 10));
-        scrollPosition = (scrollPosition % blockKey.Length);
-        
+    {            
+        if (Mathf.RoundToInt(Input.GetAxisRaw("Mouse ScrollWheel") * 10) == 1) HudUP();
+        if (Mathf.RoundToInt(Input.GetAxisRaw("Mouse ScrollWheel") * 10) == -1) HudDown();
     }
 
     void SendtoPlayer()
@@ -49,6 +48,7 @@ public class HUDManager : MonoBehaviour
         //Debug.Log("Up Called");
         scrollPosition += 1;
         scrollPosition = (scrollPosition % blockKey.Length);
+        FindObjectOfType<AudioManager>().Play("Hud Interact");
     }
 
     public void HudDown()
@@ -56,6 +56,12 @@ public class HUDManager : MonoBehaviour
         //Debug.Log("Down Called");
         scrollPosition += -1;
         scrollPosition = (scrollPosition % blockKey.Length);
+        FindObjectOfType<AudioManager>().Play("Hud Interact");
+    }
+
+    void QuantityText()
+    {
+        quantityText.text = (Player.GetComponent<BlockInteractions>().QuantityinInventory());
     }
        
 }

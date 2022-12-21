@@ -118,6 +118,7 @@ public class GenerationScriptV2 : MonoBehaviour
 
             TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
             TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
+            FindObjectOfType<AudioManager>().Play("Block Place");
             return true;
         }
         return false;

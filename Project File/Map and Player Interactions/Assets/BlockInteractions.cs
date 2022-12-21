@@ -46,4 +46,15 @@ public class BlockInteractions : MonoBehaviour
         block = selectedBlock;
     }
 
+    public string QuantityinInventory()
+    {
+        if (block == 0)
+        {
+            return "";
+        }
+        else return inventory[block].ToString();
+        
+        
+    }
+
 }
