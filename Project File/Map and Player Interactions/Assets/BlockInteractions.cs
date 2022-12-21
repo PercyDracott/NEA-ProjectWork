@@ -22,8 +22,9 @@ public class BlockInteractions : MonoBehaviour
     void Update()
     {
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (Input.GetMouseButton(0)) Break();
-        if (Input.GetMouseButton(1)) Build(block);
+        //if (Input.GetMouseButton(0)) Break();
+        if (Input.GetMouseButton(1) && block == 0) Break(); 
+        if (Input.GetMouseButton(1) && block != 0) Build(block);
 
         void Break()
         {
@@ -38,6 +39,11 @@ public class BlockInteractions : MonoBehaviour
             }
             
         }
+    }
+
+    public void HudInput(int selectedBlock)
+    {
+        block = selectedBlock;
     }
 
 }

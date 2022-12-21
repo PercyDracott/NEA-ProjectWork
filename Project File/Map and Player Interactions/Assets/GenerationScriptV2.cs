@@ -81,6 +81,7 @@ public class GenerationScriptV2 : MonoBehaviour
                 map[x, y] = 9;
             }
             else map[x, y] = 0;
+            FindObjectOfType<AudioManager>().Play("Block Break");
             return block;
         }
         return 0;
