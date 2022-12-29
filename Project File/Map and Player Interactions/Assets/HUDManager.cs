@@ -41,6 +41,8 @@ public class HUDManager : MonoBehaviour
     {
         Player.GetComponent<BlockInteractions>().HudInput(blockKey[Mathf.Abs(scrollPosition)]);
         Icon.sprite = BlockIcons[Mathf.Abs(scrollPosition)];
+        
+        
     }
     
     public void HudUP()
@@ -59,9 +61,16 @@ public class HUDManager : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("Hud Interact");
     }
 
+    public Sprite PasstoHand()
+    {
+        return BlockIcons[Mathf.Abs(scrollPosition)];
+    }
+
     void QuantityText()
     {
         quantityText.text = (Player.GetComponent<BlockInteractions>().QuantityinInventory());
     }
+
+
        
 }

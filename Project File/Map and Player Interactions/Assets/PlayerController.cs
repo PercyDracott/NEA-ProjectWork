@@ -16,20 +16,26 @@ public class PlayerController : MonoBehaviour
 
     float jumpForce;
     bool facingRight = true;
+    
+    bool isFalling { get { return (!OnTheGround && PlayerRB.velocity.y < 0); } }
+    bool wasFalling;
+    bool wasGrounded;
+    float startofFall;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        //transform.position = FindObjectOfType<GenerationScriptV2>().PlayerSpawnPoint();
     }
 
     // Update is called once per frame
     void Update()
     {
-        OnTheGround = OnGround();
+        
         xMovePlayer();
         PlayerWalkAnimation();
-
+        //PlayerFall();
 
         jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * PlayerRB.gravityScale));
         if (Input.GetKey(KeyCode.Space) && OnGround())
@@ -37,8 +43,11 @@ public class PlayerController : MonoBehaviour
             PlayerRB.AddForce(new Vector3(0.0f, jumpForce, 0.0f), ForceMode2D.Impulse);
         }
 
-
+        
     }
+
+
+    
 
     void xMovePlayer()
     {
@@ -74,6 +83,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 checkPos = new Vector3(transform.position.x, transform.position.y - PlayerCC.bounds.extents.y, 0);
         return Physics2D.OverlapCircle(checkPos, checkradius, groundLayer);
+
     }
 
     void PlayerWalkAnimation()
@@ -84,6 +94,19 @@ public class PlayerController : MonoBehaviour
         }
         else animator.Play("PlayerIdle");
     }
+
+    void FixedUpdate()
+    {
+        OnTheGround = OnGround();
+        if (!wasFalling && isFalling) startofFall = transform.position.y;
+        if (!wasGrounded && OnTheGround) GetComponent<HealthManager>().FallDamage(startofFall - transform.position.y);
+        wasGrounded = OnTheGround;
+        wasFalling = isFalling;
+    }
+
+    
+
+    
 
     
 }

@@ -10,35 +10,39 @@ public class BlockInteractions : MonoBehaviour
     Vector2 mousePos;
     public int block;
     public int[] inventory = new int[10];
+    public bool hasAxe;
     
 
 
     void Start()
     {
-
+        //transform.position = MapManagerObject.GetComponent<GenerationScriptV2>().PlayerSpawnPoint();
     }
+   
 
     // Update is called once per frame
     void Update()
     {
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //if (Input.GetMouseButton(0)) Break();
-        if (Input.GetMouseButton(1) && block == 0) Break(); 
-        if (Input.GetMouseButton(1) && block != 0) Build(block);
+        if (Input.GetMouseButtonDown(1) && block == 0) Break(); 
+        if (Input.GetMouseButtonDown(1) && block != 0) Build(block);
 
-        void Break()
+        
+    }
+
+    void Break()
+    {
+        inventory[MapManagerObject.GetComponent<GenerationScriptV2>().BreakBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))]++;
+    }
+
+    void Build(int BlockPassed)
+    {
+        if (inventory[BlockPassed] > 0 && MapManagerObject.GetComponent<GenerationScriptV2>().BuildBlock(BlockPassed, (int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y)))
         {
-            inventory[MapManagerObject.GetComponent<GenerationScriptV2>().BreakBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))]++;
+            inventory[BlockPassed]--;
         }
 
-        void Build(int BlockPassed)
-        {
-            if (inventory[BlockPassed] > 0 && MapManagerObject.GetComponent<GenerationScriptV2>().BuildBlock(BlockPassed, (int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y)))
-            {
-                inventory[BlockPassed]--;
-            }
-            
-        }
     }
 
     public void HudInput(int selectedBlock)

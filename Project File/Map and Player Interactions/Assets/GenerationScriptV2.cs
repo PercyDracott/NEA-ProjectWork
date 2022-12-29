@@ -539,4 +539,17 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+    public Vector3Int PlayerSpawnPoint()
+    {
+        Debug.Log("called");
+        int tempy = worldHeight - 1;
+        while (map[worldWidth/2, tempy] == 0)
+        {
+            tempy--;
+        }
+        tempy++;
+        Debug.Log($"{worldWidth / 2}, {tempy}");
+        return new Vector3Int(worldWidth / 2, tempy, 0);
+    }
+
 }
