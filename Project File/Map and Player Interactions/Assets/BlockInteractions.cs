@@ -10,8 +10,15 @@ public class BlockInteractions : MonoBehaviour
     Vector2 mousePos;
     public int block;
     public int[] inventory = new int[10];
-    public bool hasAxe;
-    
+
+    [SerializeField]
+    public bool hasAxe { get; private set; }
+    [SerializeField]
+    public bool hasSword { get; private set; }
+
+    [SerializeField]
+    float timemining;
+    Vector2 mousePostionOnCall;
 
 
     void Start()
@@ -25,7 +32,8 @@ public class BlockInteractions : MonoBehaviour
     {
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //if (Input.GetMouseButton(0)) Break();
-        if (Input.GetMouseButtonDown(1) && block == 0) Break(); 
+        
+        if (Input.GetMouseButton(1) && block == 0) TimedBreaking();
         if (Input.GetMouseButtonDown(1) && block != 0) Build(block);
 
         
@@ -33,7 +41,60 @@ public class BlockInteractions : MonoBehaviour
 
     void Break()
     {
+        //Debug.Log(MapManagerObject.GetComponent<GenerationScriptV2>().ReturnTypeOfBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y)));
         inventory[MapManagerObject.GetComponent<GenerationScriptV2>().BreakBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))]++;
+    }
+
+    void TimedBreaking()
+    {
+        if (timemining == 0) mousePostionOnCall = new Vector2((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y));
+        if (mousePostionOnCall == new Vector2((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y)))
+        {
+            timemining += Time.deltaTime;
+            //Debug.Log(timemining);
+            if (timemining > AmountofTimetoBreak())
+            {
+                Break();
+                //Debug.Log("Mined");
+                timemining = 0;
+            }
+        }
+        else timemining = 0;
+    }
+
+    float AmountofTimetoBreak() 
+    {
+        float timetobreak;
+        switch (MapManagerObject.GetComponent<GenerationScriptV2>().ReturnTypeOfBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))) 
+        {
+            case (1):
+                timetobreak = 0.6f;
+                break;
+            case (2):
+                timetobreak = 1.8f;
+                break;
+            case (3):
+                timetobreak = 1.8f;
+                break;
+            case (4):
+                timetobreak = 1f;
+                break;
+            case (5):
+                timetobreak = 0.2f;
+                break;
+            case (6):
+                timetobreak = 1f;
+                break;
+            default:
+                timetobreak = 1f;
+                break;
+        }
+        if (hasAxe)
+        {
+            return timetobreak / 2;
+        }
+        else return timetobreak;
+
     }
 
     void Build(int BlockPassed)
@@ -59,6 +120,42 @@ public class BlockInteractions : MonoBehaviour
         else return inventory[block].ToString();
         
         
+    }
+
+    public bool RequestToCraft(int item)
+    {
+        if (item == 0)
+        {
+            if (inventory[2] >= 12 && inventory[3] >= 12 && inventory[6] >= 8)
+            {
+                inventory[2] -= 12;
+                inventory[3] -= 12;
+                inventory[6] -= 8;
+                hasAxe = true;
+                return true;
+            }
+        }
+        if (item == 1)
+        {
+            if (inventory[2] >= 12 && inventory[3] >= 10 && inventory[6] >= 4)
+            {
+                inventory[2] -= 12;
+                inventory[3] -= 10;
+                inventory[6] -= 4;
+                hasSword = true;
+                return true;
+            }
+        }
+        if (item == 2)
+        {
+            if (inventory[4] >= 1)
+            {
+                inventory[4] -= 1;
+                inventory[6] += 4;
+                return true;
+            }
+        }
+        return false;
     }
 
 }

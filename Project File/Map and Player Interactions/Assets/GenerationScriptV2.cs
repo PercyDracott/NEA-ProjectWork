@@ -87,9 +87,19 @@ public class GenerationScriptV2 : MonoBehaviour
         return 0;
     }
 
+    public int ReturnTypeOfBlock(int x, int y)
+    {
+        if (!(map[x, y] == 8 || map[x, y] == 9 || map[x, y] == 0))
+        {
+            int block = map[x, y];
+            return block;
+        }
+        return 0;
+    }
+
     public bool BuildBlock(int block,int x, int y)
     {
-        Debug.Log($"buildblock called, position {x}, {y}");
+        //Debug.Log($"buildblock called, position {x}, {y}");
         if ((map[x-1,y] != 0 || map[x + 1, y] != 0 || map[x, y - 1] != 0 || map[x, y + 1] != 0) && (map[x,y] == 0 || map[x, y] == 8 || map[x, y] == 9))
         {
             map[x, y] = block;
