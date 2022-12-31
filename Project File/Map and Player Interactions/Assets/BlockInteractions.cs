@@ -24,6 +24,7 @@ public class BlockInteractions : MonoBehaviour
     void Start()
     {
         //transform.position = MapManagerObject.GetComponent<GenerationScriptV2>().PlayerSpawnPoint();
+        
     }
    
 
@@ -124,7 +125,7 @@ public class BlockInteractions : MonoBehaviour
 
     public bool RequestToCraft(int item)
     {
-        if (item == 0)
+        if (item == 0 && !hasAxe)
         {
             if (inventory[2] >= 12 && inventory[3] >= 12 && inventory[6] >= 8)
             {
@@ -135,7 +136,7 @@ public class BlockInteractions : MonoBehaviour
                 return true;
             }
         }
-        if (item == 1)
+        if (item == 1 && !hasSword)
         {
             if (inventory[2] >= 12 && inventory[3] >= 10 && inventory[6] >= 4)
             {
