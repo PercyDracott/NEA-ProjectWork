@@ -10,8 +10,11 @@ using UnityEngine.UI;
 public class GenerationScriptV2 : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int worldWidth;
-    public int worldHeight;
+    public int worldWidth { get; private set; }
+    public int worldHeight { get; private set; }
+    public bool terrainGenerationComplete { get; private set; }
+
+
     [SerializeField] float Seed;
     [SerializeField] float StoneSeed;
     //[SerializeField] float CaveSeed;
@@ -50,8 +53,10 @@ public class GenerationScriptV2 : MonoBehaviour
 
     void Start()
     {
-        
-        Generation();
+        worldWidth = 1024;
+        worldHeight = 256;
+
+        terrainGenerationComplete = Generation();
     }
 
     //void Update()
@@ -154,7 +159,7 @@ public class GenerationScriptV2 : MonoBehaviour
         Renderer(map, TestTileFG, TestTileBG);
     }
 
-    public void Generation()
+    public bool Generation()
     {
         
         TestTileBG.ClearAllTiles();
@@ -169,7 +174,7 @@ public class GenerationScriptV2 : MonoBehaviour
         ApplyCaves(map);
         AddTrees(TreePopulation, TestTileFG, Log, Leaf);
         Renderer(map, TestTileFG, TestTileBG);
-
+        return true;
         //map = Generate2DArray(worldWidth, worldHeight);
         //cavemap = GenerateCaveMap(worldWidth, worldHeight);
         //map = TerrainGeneration(map);

@@ -5,30 +5,34 @@ using UnityEngine;
 public class AttackManager : MonoBehaviour
 {
     public GameObject Sword;
+    public GameObject AttackPoint;
     public float AttackRate;
+    public int AttackDamage;
+    public LayerMask NPCLayer;
+    
 
     Animator animator;
     float timeSinceAttack;
-    bool animationNotPlayed = true;
-
+    
     // Start is called before the first frame update
     void Start()
     {
         animator = Sword.GetComponentInChildren<Animator>();
+        Debug.DrawLine(Sword.transform.position, new Vector2(Sword.transform.position.x + 1, Sword.transform.position.y + 2));
     }
 
     // Update is called once per frame
     void Update()
     {
         timeSinceAttack += Time.deltaTime;
-        if (Input.GetMouseButtonDown(0) && GetComponent<BlockInteractions>().hasSword && timeSinceAttack > AttackRate)
+        if (Input.GetMouseButtonDown(0) && GetComponent<BlockInteractions>().hasSword && timeSinceAttack > AttackRate && GetComponent<BlockInteractions>().MouseInRange())
         {
-            TimedAttack();
-            
+            timeSinceAttack = 0;
+            animator.Play("SwordSwing");
+            FindObjectOfType<AudioManager>().Play("Sword Swing");
+            Attack();
         }
-       
-                  
-
+        
     }
 
     private void FixedUpdate()
@@ -40,22 +44,22 @@ public class AttackManager : MonoBehaviour
         else Sword.GetComponent<SpriteRenderer>().enabled = false;
     }
 
-    void TimedAttack()
+    void Attack()
     {
-        timeSinceAttack = 0;
-        animator.Play("SwordSwing");
-        FindObjectOfType<AudioManager>().Play("Sword Swing");
-        //PlayAnimation();
-    }
-
-    void PlayAnimation()
-    {
-        if (animationNotPlayed)
+        Collider2D[] hitEnemies = (Physics2D.OverlapCapsuleAll(AttackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, NPCLayer));
+        //Debug.Log(hitEnemies.Length);
+        foreach(Collider2D hits in hitEnemies)
         {
             
+            hits.GetComponent<ZombieControl>().TakeDamage(AttackDamage);
             
         }
+                  
+        
     }
 
-   
+    
+
+
+
 }

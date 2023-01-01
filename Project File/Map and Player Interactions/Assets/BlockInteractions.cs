@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class BlockInteractions : MonoBehaviour
     Vector2 mousePos;
     public int block;
     public int[] inventory = new int[10];
+    public int range;
 
     [SerializeField]
     public bool hasAxe { get; private set; }
@@ -34,8 +36,8 @@ public class BlockInteractions : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //if (Input.GetMouseButton(0)) Break();
         
-        if (Input.GetMouseButton(1) && block == 0) TimedBreaking();
-        if (Input.GetMouseButtonDown(1) && block != 0) Build(block);
+        if (Input.GetMouseButton(1) && block == 0 && MouseInRange()) TimedBreaking();
+        if (Input.GetMouseButtonDown(1) && block != 0 && MouseInRange()) Build(block);
 
         
     }
@@ -157,6 +159,12 @@ public class BlockInteractions : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public bool MouseInRange()
+    {
+        if (Mathf.Sqrt((float)(System.Math.Pow((mousePos.x - transform.position.x), 2) + System.Math.Pow((mousePos.y - transform.position.y), 2))) < range) return true;
+        else return false;
     }
 
 }

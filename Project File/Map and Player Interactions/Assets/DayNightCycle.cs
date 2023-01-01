@@ -5,7 +5,7 @@ using UnityEngine;
 public class DayNightCycle : MonoBehaviour
 {
     public float timeOfDay { get; private set; }
-    public bool isDay { get { return (timeOfDay <= 300); } }
+    public bool isDay { get { return (timeOfDay <= DayOrNightTime); } }
 
     public float MoveY;
     public float DayOrNightTime;
