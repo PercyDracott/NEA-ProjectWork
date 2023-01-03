@@ -7,8 +7,10 @@ public class ZombieControl : MonoBehaviour
 {
     public int sightRange;
     public LayerMask playerLayer;
-    
+    public float knockbackStrength;
+
     int ZombieHealth = 10;
+    
 
     Rigidbody2D zombieRB;
     Animator animator;
@@ -47,7 +49,7 @@ public class ZombieControl : MonoBehaviour
     {
         if (DayNightCycleInUse.isDay())
         {
-            TakeDamage(1);
+            TakeDamage(1,false);
         }
     }
 
@@ -72,8 +74,9 @@ public class ZombieControl : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, bool isFromPlayer)
     {
+        if(isFromPlayer) FindObjectOfType<AudioManager>().Play("Mob Damage");
         if (ZombieHealth - damage > 0)
         {
             ZombieHealth -= damage;
@@ -83,5 +86,9 @@ public class ZombieControl : MonoBehaviour
         
     }
 
-
+    public void ApplyKnockback(Vector2 attackPos)
+    {
+        Vector2 direction = ((Vector2)transform.position - attackPos).normalized;
+        zombieRB.AddForce(direction * knockbackStrength, ForceMode2D.Impulse);
+    }
 }

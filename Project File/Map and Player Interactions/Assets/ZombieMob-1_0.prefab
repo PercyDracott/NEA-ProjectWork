@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 838167978021966666}
   - component: {fileID: 520521664712308926}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: NPCGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 205138447012821256}
   - component: {fileID: 7696540542107938763}
   - component: {fileID: 3842206524302622246}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ZombieMob-1_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,3 +273,4 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  knockbackStrength: 2
