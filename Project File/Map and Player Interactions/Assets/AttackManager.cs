@@ -31,6 +31,7 @@ public class AttackManager : MonoBehaviour
             animator.Play("SwordSwing");
             FindObjectOfType<AudioManager>().Play("Sword Swing");
             Attack();
+            FindObjectOfType<AudioManager>().Play("Mob Damage");
         }
         
     }

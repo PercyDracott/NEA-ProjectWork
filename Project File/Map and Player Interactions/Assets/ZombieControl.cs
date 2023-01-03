@@ -7,10 +7,13 @@ public class ZombieControl : MonoBehaviour
 {
     public int sightRange;
     public LayerMask playerLayer;
+    
     int ZombieHealth = 10;
 
     Rigidbody2D zombieRB;
     Animator animator;
+    DayNightCycle DayNightCycleInUse;
+    GameObject DayNightManager;
 
     public bool playerInRange { get { return (Physics2D.OverlapCircle(transform.position, sightRange, playerLayer)); } }
 
@@ -19,6 +22,8 @@ public class ZombieControl : MonoBehaviour
     {
         zombieRB = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        DayNightManager = GameObject.Find("DayNightCycleLight");
+        DayNightCycleInUse = DayNightManager.GetComponent<DayNightCycle>();
     }
 
     // Update is called once per frame
@@ -30,11 +35,20 @@ public class ZombieControl : MonoBehaviour
 
     private void FixedUpdate()
     {
+        TakeDamageDuringDay();
         if (playerInRange)
         {
             //Debug.Log("InRange");
         }
 
+    }
+
+    void TakeDamageDuringDay()
+    {
+        if (DayNightCycleInUse.isDay())
+        {
+            TakeDamage(1);
+        }
     }
 
     void ZombieWalkAnimations()
@@ -60,8 +74,7 @@ public class ZombieControl : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        FindObjectOfType<AudioManager>().Play("Take Damage");
-        if (ZombieHealth - damage >= 0)
+        if (ZombieHealth - damage > 0)
         {
             ZombieHealth -= damage;
 
@@ -69,4 +82,6 @@ public class ZombieControl : MonoBehaviour
         else Destroy(gameObject);
         
     }
+
+
 }

@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour
 {
-    public float timeOfDay { get; private set; }
-    public bool isDay { get { return (timeOfDay <= DayOrNightTime); } }
+    
 
     public float MoveY;
     public float DayOrNightTime;
@@ -42,15 +41,23 @@ public class DayNightCycle : MonoBehaviour
             {
                 time = timeSinceActive - DayOrNightTime;
                 transform.position = new Vector3(StartPos.x, (StartPos.y + MoveY) - MoveY * (time / DayOrNightTime), StartPos.z);
+                
             }
             else
             {
                 time = timeSinceActive;
                 transform.position = new Vector3(StartPos.x, StartPos.y + MoveY * (time / DayOrNightTime), StartPos.z);
+                
             }
 
         }
     }
 
+    public bool isDay()
+    {
+        if (timeSinceActive >= DayOrNightTime * 0.5 && timeSinceActive <= DayOrNightTime * 1.5) return false;
+        else return true;
+        
+    }
 
 }

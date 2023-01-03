@@ -567,4 +567,16 @@ public class GenerationScriptV2 : MonoBehaviour
         return new Vector3Int(worldWidth / 2, tempy, 0);
     }
 
+    public int ReturnGroundPosition(int xPos)
+    {
+        if (xPos-1 >= worldWidth) return worldHeight;
+        int tempy = worldHeight - 1;
+        while (map[xPos-1, tempy] == 0)
+        {
+            tempy--;
+        }
+        tempy += 5;
+        return tempy;
+    }
+
 }
