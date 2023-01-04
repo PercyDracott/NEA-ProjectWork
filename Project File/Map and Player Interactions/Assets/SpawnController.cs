@@ -48,7 +48,7 @@ public class SpawnController : MonoBehaviour
         Vector3[] spawnLocations = new Vector3[spawnAmount];
         for (int i = 0; i < spawnAmount; i++)
         {
-            int tempxPos = UnityEngine.Random.Range(0, GenerationScriptInUse.worldWidth);
+            int tempxPos = UnityEngine.Random.Range(1, GenerationScriptInUse.worldWidth);
             spawnLocations[i] = new Vector3(tempxPos, GenerationScriptInUse.ReturnGroundPosition(tempxPos),0);
         }
         return spawnLocations;

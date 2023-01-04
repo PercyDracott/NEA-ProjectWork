@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
         moveX = Input.GetAxis("Horizontal");
         Vector2 movement = new Vector2(moveX, 0);
         if (OnGround()) PlayerRB.velocity = movement * speed;
-        else if (!OnGround() && moveX != 0) PlayerRB.AddForce(new Vector2(transform.localScale.x, 0));
+        else if (!OnGround() && moveX != 0) PlayerRB.AddForce(new Vector2(transform.localScale.x * 2, 0));
     }
 
     void PlayerDirection()
