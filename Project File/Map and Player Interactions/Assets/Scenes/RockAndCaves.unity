@@ -1502,7 +1502,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &350814513
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3546,7 +3546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ae97db00d2fd8b48a58556a621cdaca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnAmount: 10
+  spawnAmount: 15
   DayNightManager: {fileID: 10119048}
   WorldGenerator: {fileID: 1645529102}
   MobPrefab: {fileID: 5638747855069318109, guid: 993272566c7f8e14292f8bdfcebc628c, type: 3}

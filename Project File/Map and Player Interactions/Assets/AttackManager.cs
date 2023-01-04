@@ -48,7 +48,7 @@ public class AttackManager : MonoBehaviour
     void Attack()
     {
         Collider2D[] hitEnemies = (Physics2D.OverlapCapsuleAll(AttackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, NPCLayer));
-        Debug.Log(hitEnemies.Length);
+        //Debug.Log(hitEnemies.Length);
         foreach(Collider2D hits in hitEnemies)
         {
             hits.GetComponent<ZombieControl>().TakeDamage(AttackDamage,true);
