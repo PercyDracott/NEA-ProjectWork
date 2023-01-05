@@ -12,6 +12,7 @@ public class DayNightCycle : MonoBehaviour
     Vector3 StartPos;
     float timeSinceActive;
     float time;
+    public bool DayNightEnabled { get; set; }
 
 
     void Start()
@@ -28,7 +29,7 @@ public class DayNightCycle : MonoBehaviour
 
     void MovingTheLight()
     {
-        if ((MoveY > 0) && DayOrNightTime > 0)
+        if ((MoveY > 0) && DayOrNightTime > 0 && DayNightEnabled)
         {
             timeSinceActive += Time.deltaTime;
             if (timeSinceActive > 2 * DayOrNightTime)

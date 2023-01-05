@@ -10,7 +10,12 @@ public class ZombieControl : MonoBehaviour
     public LayerMask playerLayer;
     public LayerMask groundLayer;
 
+    public GameObject attackPoint;
+    public float attackDamage;
+    public float attackRate;
+
     public float knockbackStrength;
+    public float knockbackDuration;
     public float walkSpeed;
     public float jumpHeight = 6;
     float jumpForce;
@@ -27,10 +32,14 @@ public class ZombieControl : MonoBehaviour
     float timeSinceActive;
     float time;
 
+    bool hasBeenKnockedBack;
+    float timeSinceKB;
+    float timeSinceAttack;
+
     public bool playerInRange { get { return (Physics2D.OverlapCircle(transform.position, sightRange, playerLayer)); } }
     public bool OnGround { get { return Physics2D.OverlapCircle(new Vector2(transform.position.x, transform.position.y - 1.1f), 0.1f, groundLayer); } }
+    public bool playerInAttackRange { get { return Physics2D.OverlapCapsule(attackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, playerLayer); } }
     
-
     // Start is called before the first frame update
     void Start()
     {
@@ -41,7 +50,7 @@ public class ZombieControl : MonoBehaviour
         patrolRange = UnityEngine.Random.Range(1, 20);
         RandomStartingDirection();
         Physics.IgnoreLayerCollision(gameObject.layer, gameObject.layer);
-        
+        timeSinceAttack = attackRate;
 
     }
 
@@ -60,17 +69,46 @@ public class ZombieControl : MonoBehaviour
         //Debug.DrawLine(new Vector2(transform.position.x, transform.position.y - 1.1f), new Vector2(transform.position.x, transform.position.y - 1.2f));
         Debug.DrawRay(new Vector2(transform.position.x, transform.position.y - 0.5f), new Vector2(transform.localScale.x,0), Color.red);
         Debug.DrawRay(new Vector2(transform.position.x, transform.position.y + 0.5f), new Vector2(transform.localScale.x, 0), Color.red);
+
         ZombieWalkAnimations();
         TakeDamageDuringDay();
         JumpUpByOneBlock();
         if (playerInRange)
         {
             FaceTowardsPlayer(playerInRangePosition());
-            zombieRB.velocity = new Vector2(walkSpeed * transform.localScale.x,zombieRB.velocity.y);
+            if (playerInAttackRange) AttackManager();
+            if (!hasBeenKnockedBack && !playerInAttackRange) zombieRB.velocity = new Vector2(walkSpeed * transform.localScale.x,zombieRB.velocity.y);
         }
         else IdlePatrol();
-        
 
+        if (hasBeenKnockedBack)
+        {
+            timeSinceKB += Time.deltaTime;
+            if (timeSinceKB >= knockbackDuration) hasBeenKnockedBack = false;
+        }
+    }
+
+    void Attack()
+    {
+        Collider2D[] hitPlayers = (Physics2D.OverlapCapsuleAll(attackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, playerLayer));
+        //Debug.Log(hitEnemies.Length);
+        foreach (Collider2D hits in hitPlayers)
+        {
+            hits.GetComponent<HealthManager>().TakeDamage((int)attackDamage);
+            
+        }
+
+
+    }
+
+    void AttackManager()
+    {
+        timeSinceAttack += Time.deltaTime;
+        if (timeSinceAttack > attackRate)
+        {
+            timeSinceAttack = 0;
+            Attack();
+        }
     }
 
     void FaceTowardsPlayer(Vector2 playerPos)
@@ -136,7 +174,7 @@ public class ZombieControl : MonoBehaviour
         {
             jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * zombieRB.gravityScale));
             zombieRB.AddForce(new Vector3(0.0f, jumpForce, 0.0f), ForceMode2D.Impulse);
-            Debug.Log($"Jump Called, {jumpForce}");
+            //Debug.Log($"Jump Called, {jumpForce}");
         }
 
     }
@@ -172,7 +210,11 @@ public class ZombieControl : MonoBehaviour
      
     public void TakeDamage(int damage, bool isFromPlayer)
     {
-        if(isFromPlayer) FindObjectOfType<AudioManager>().Play("Mob Damage");
+        if (isFromPlayer)
+        {
+            FindObjectOfType<AudioManager>().Play("Mob Damage");
+            
+        }
         if (ZombieHealth - damage > 0)
         {
             ZombieHealth -= damage;
@@ -184,7 +226,10 @@ public class ZombieControl : MonoBehaviour
 
     public void ApplyKnockback(Vector2 attackPos)
     {
+        hasBeenKnockedBack = true;
+        timeSinceKB = 0;
         Vector2 direction = ((Vector2)transform.position - attackPos).normalized;
         zombieRB.AddForce(direction * knockbackStrength, ForceMode2D.Impulse);
+        Debug.Log(hasBeenKnockedBack);
     }
 }

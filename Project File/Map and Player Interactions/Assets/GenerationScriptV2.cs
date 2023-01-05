@@ -10,8 +10,8 @@ using UnityEngine.UI;
 public class GenerationScriptV2 : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int worldWidth { get; private set; }
-    public int worldHeight { get; private set; }
+    public int worldWidth = 1024;
+    public int worldHeight = 256;
     public bool terrainGenerationComplete { get; private set; }
 
 
@@ -56,7 +56,7 @@ public class GenerationScriptV2 : MonoBehaviour
         worldWidth = 1024;
         worldHeight = 256;
 
-        terrainGenerationComplete = Generation();
+        //terrainGenerationComplete = Generation();
     }
 
     //void Update()
@@ -174,6 +174,7 @@ public class GenerationScriptV2 : MonoBehaviour
         ApplyCaves(map);
         AddTrees(TreePopulation, TestTileFG, Log, Leaf);
         Renderer(map, TestTileFG, TestTileBG);
+        SaveMap();
         return true;
         //map = Generate2DArray(worldWidth, worldHeight);
         //cavemap = GenerateCaveMap(worldWidth, worldHeight);
@@ -304,6 +305,8 @@ public class GenerationScriptV2 : MonoBehaviour
     {
         using (StreamWriter sw = new StreamWriter(Filename))
         {
+            //sw.WriteLine(worldHeight);
+            //sw.WriteLine(worldWidth);
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
@@ -472,6 +475,8 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+
+
     private int GetNeighbours(int[,] tempmap, int xs, int ys, int neighbours)
     {
         for (int x = xs - 1; x <= xs + 1; x++)
@@ -505,7 +510,7 @@ public class GenerationScriptV2 : MonoBehaviour
 
         int tempx = 0;
         int[] positionHistory = new int[density];
-        positionHistory[0] = 0;
+        //positionHistory[0] = 0;
 
         for (int i = 0; i < density; i++)
         {
@@ -557,12 +562,15 @@ public class GenerationScriptV2 : MonoBehaviour
     public Vector3Int PlayerSpawnPoint()
     {
         Debug.Log("called");
+        Debug.Log(worldHeight);
+        Debug.Log(worldWidth);
+
         int tempy = worldHeight - 1;
         while (map[worldWidth/2, tempy] == 0)
         {
             tempy--;
         }
-        tempy++;
+        tempy += 2;
         Debug.Log($"{worldWidth / 2}, {tempy}");
         return new Vector3Int(worldWidth / 2, tempy, 0);
     }

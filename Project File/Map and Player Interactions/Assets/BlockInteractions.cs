@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 
@@ -26,20 +27,27 @@ public class BlockInteractions : MonoBehaviour
     void Start()
     {
         //transform.position = MapManagerObject.GetComponent<GenerationScriptV2>().PlayerSpawnPoint();
-        
+        MapManagerObject = GameObject.Find("GeneratorV2");
     }
-   
 
     // Update is called once per frame
     void Update()
     {
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
         //if (Input.GetMouseButton(0)) Break();
         
         if (Input.GetMouseButton(1) && block == 0 && MouseInRange()) TimedBreaking();
         if (Input.GetMouseButtonDown(1) && block != 0 && MouseInRange()) Build(block);
 
-        
+
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    LoadPlayerState("PlayerSaveFile.txt");
+        //}
+        //if (Input.GetKeyDown(KeyCode.O))
+        //{
+        //    SavePlayerState("PlayerSaveFile.txt");
+        //}
     }
 
     void Break()
@@ -166,5 +174,40 @@ public class BlockInteractions : MonoBehaviour
         if (Mathf.Sqrt((float)(System.Math.Pow((mousePos.x - transform.position.x), 2) + System.Math.Pow((mousePos.y - transform.position.y), 2))) < range) return true;
         else return false;
     }
+
+    public void SavePlayerState(string filename)
+    {
+        using (StreamWriter sw = new StreamWriter(filename))
+        {
+            for (int i = 0; i < inventory.Length; i++)
+            {
+                sw.WriteLine(inventory[i]);
+            }
+            sw.WriteLine(transform.position.x);
+            sw.WriteLine(transform.position.y);
+        }
+    }
+
+    public void LoadPlayerState(string filename)
+    {
+        string value;
+        int i = 0;
+        float tempx = 0;
+        float tempy = 0;
+
+        using (StreamReader sr = new StreamReader(filename))
+        {            
+            while ((value = sr.ReadLine()) != null)
+            {
+                //Debug.Log($"{i},{value},{(float)Convert.ToDouble(value)}");
+                if (i < 10) inventory[i] = Convert.ToInt16(value);
+                if (i == 10) tempx = (float)Convert.ToDouble(value);
+                if (i == 11) tempy = (float)Convert.ToDouble(value);
+                i++;
+            }
+            transform.position = new Vector2(tempx,tempy);
+        }
+    }
+
 
 }

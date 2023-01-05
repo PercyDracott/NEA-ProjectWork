@@ -26,13 +26,12 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        //transform.position = FindObjectOfType<GenerationScriptV2>().PlayerSpawnPoint();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
         xMovePlayer();
         PlayerWalkAnimation();
         //PlayerFall();
@@ -43,8 +42,12 @@ public class PlayerController : MonoBehaviour
             PlayerRB.AddForce(new Vector3(0.0f, jumpForce, 0.0f), ForceMode2D.Impulse);
         }
 
-        
+        //Debug.Log(PlayerRB.velocity.x);
+
     }
+
+    
+
 
 
     
@@ -55,7 +58,7 @@ public class PlayerController : MonoBehaviour
         moveX = Input.GetAxis("Horizontal");
         Vector2 movement = new Vector2(moveX, 0);
         if (OnGround()) PlayerRB.velocity = movement * speed;
-        else if (!OnGround() && moveX != 0) PlayerRB.AddForce(new Vector2(transform.localScale.x * 2, 0));
+        else if (!OnGround() && moveX != 0) PlayerRB.AddForce(new Vector2(transform.localScale.x, 0));
     }
 
     void PlayerDirection()

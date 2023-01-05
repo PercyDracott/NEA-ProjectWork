@@ -9,7 +9,8 @@ public class HUDManager : MonoBehaviour
 {
     
     public int scrollPosition = 1;
-    public GameObject Player;
+    [SerializeField]
+    GameObject Player;
     public UnityEngine.UI.Image Icon;
     public Sprite axeIcon, emptyIcon;
     public Sprite[] BlockIcons = new Sprite[6];
@@ -22,12 +23,16 @@ public class HUDManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        //Temporary Code
+        Player = GameObject.Find("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+        Player = GameObject.Find("Player(Clone)");
+        if (Player == null) return;
         MouseScroll();
         SendtoPlayer();
         QuantityText();
@@ -37,6 +42,7 @@ public class HUDManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Player == null) return;
         if (Player.GetComponent<BlockInteractions>().hasAxe) BlockIcons[0] = axeIcon;
         else BlockIcons[0] = emptyIcon;
 
