@@ -2636,8 +2636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnableDayNightCycle: 1
-  Player: {fileID: 8920855438357661818, guid: cd6e46c8a5789422784e67c3edcabfe7, type: 3}
-  MapManager: {fileID: 1645529102}
+  PlayerPreFab: {fileID: 8920855438357661818, guid: cd6e46c8a5789422784e67c3edcabfe7, type: 3}
 --- !u!4 &1084694197
 Transform:
   m_ObjectHideFlags: 0
@@ -3291,7 +3290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 8
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
@@ -4238,6 +4237,7 @@ MonoBehaviour:
   - {fileID: -263909531, guid: e43ee53167ed369479df73c91b6e46ea, type: 3}
   - {fileID: 969873438, guid: e43ee53167ed369479df73c91b6e46ea, type: 3}
   quantityText: {fileID: 1579442466}
+  PauseDeathMenuManager: {fileID: 0}
   craftMenu: {fileID: 1483703468}
 --- !u!1 &1645529102
 GameObject:

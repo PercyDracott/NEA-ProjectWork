@@ -10,13 +10,14 @@ public class HUDManager : MonoBehaviour
     
     public int scrollPosition = 1;
     [SerializeField]
-    GameObject Player;
+    public GameObject Player;
     public UnityEngine.UI.Image Icon;
     public Sprite axeIcon, emptyIcon;
     public Sprite[] BlockIcons = new Sprite[6];
     public TextMeshProUGUI quantityText;
     int[] blockKey = { 0 ,1, 2, 4, 5, 6 };
-    
+
+    public GameObject PauseDeathMenuManager;
     public GameObject craftMenu;
     bool craftMenuShowing;
 
@@ -24,29 +25,35 @@ public class HUDManager : MonoBehaviour
     void Start()
     {
         //Temporary Code
-        Player = GameObject.Find("Player");
+        //Player = GameObject.Find("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (!PauseDeathMenuManager.GetComponent<PlayerMenuManager>().hasAnyMenuOpen)
+        {
+            MouseScroll();
+            SendtoPlayer();
+            QuantityText();
+        }
         
-        Player = GameObject.Find("Player(Clone)");
-        if (Player == null) return;
-        MouseScroll();
-        SendtoPlayer();
-        QuantityText();
         //Debug.Log(block);
         //Debug.Log("running");
     }
 
     void FixedUpdate()
     {
-        if (Player == null) return;
-        if (Player.GetComponent<BlockInteractions>().hasAxe) BlockIcons[0] = axeIcon;
-        else BlockIcons[0] = emptyIcon;
+        if (!PauseDeathMenuManager.GetComponent<PlayerMenuManager>().hasAnyMenuOpen)
+        {
+            if (PauseDeathMenuManager.GetComponent<PlayerMenuManager>().hasAnyMenuOpen) return;
+            if (Player.GetComponent<BlockInteractions>().hasAxe) BlockIcons[0] = axeIcon;
+            else BlockIcons[0] = emptyIcon;
 
-        craftMenu.SetActive(craftMenuShowing);
+            craftMenu.SetActive(craftMenuShowing);
+        }
+        
     }
 
     void MouseScroll()

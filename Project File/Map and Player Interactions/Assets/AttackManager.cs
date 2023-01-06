@@ -24,15 +24,19 @@ public class AttackManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timeSinceAttack += Time.deltaTime;
-        if (Input.GetMouseButtonDown(0) && GetComponent<BlockInteractions>().hasSword && timeSinceAttack > AttackRate && GetComponent<BlockInteractions>().MouseInRange())
+        if (!GetComponentInChildren<PlayerMenuManager>().hasAnyMenuOpen)
         {
-            timeSinceAttack = 0;
-            animator.Play("SwordSwing");
-            FindObjectOfType<AudioManager>().Play("Sword Swing");
-            Attack();
-            
+            timeSinceAttack += Time.deltaTime;
+            if (Input.GetMouseButtonDown(0) && GetComponent<BlockInteractions>().hasSword && timeSinceAttack > AttackRate && GetComponent<BlockInteractions>().MouseInRange())
+            {
+                timeSinceAttack = 0;
+                animator.Play("SwordSwing");
+                FindObjectOfType<AudioManager>().Play("Sword Swing");
+                Attack();
+
+            }
         }
+        
         
     }
 

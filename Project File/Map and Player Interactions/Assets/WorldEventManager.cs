@@ -5,14 +5,14 @@ using UnityEngine;
 public class WorldEventManager : MonoBehaviour
 {
     public bool EnableDayNightCycle = true;
-    public GameObject Player;
-    public GameObject MapManager;
+    public GameObject PlayerPreFab;
+    //public GameObject MapManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        MapManager.GetComponent<GenerationScriptV2>().Generation();
-        Instantiate(Player, MapManager.GetComponent<GenerationScriptV2>().PlayerSpawnPoint(), Quaternion.identity);
+        GetComponentInChildren<GenerationScriptV2>().Generation();
+        Instantiate(PlayerPreFab, GetComponentInChildren<GenerationScriptV2>().PlayerSpawnPoint(), Quaternion.identity);
         Debug.Log("finito");
 
     }
@@ -21,5 +21,18 @@ public class WorldEventManager : MonoBehaviour
     void FixedUpdate()
     {
         GetComponentInChildren<DayNightCycle>().DayNightEnabled = EnableDayNightCycle;
+    }
+
+    public void PlayerDeath(GameObject Player)
+    {
+        Player.GetComponentInChildren<PlayerMenuManager>().EnableDeathScreen();
+        Player.GetComponent<BlockInteractions>().EmptyInventory();
+        Player.transform.position = new Vector3(-1000, 0, 0);
+        
+    }
+
+    public void PlayerRespawn(GameObject Player)
+    {
+        Player.transform.position = GetComponentInChildren<GenerationScriptV2>().PlayerSpawnPoint();
     }
 }

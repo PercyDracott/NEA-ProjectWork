@@ -33,11 +33,15 @@ public class BlockInteractions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mousePos = GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
-        //if (Input.GetMouseButton(0)) Break();
+        if (!GetComponentInChildren<PlayerMenuManager>().hasAnyMenuOpen)
+        {
+            mousePos = GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
+            //if (Input.GetMouseButton(0)) Break();
+
+            if (Input.GetMouseButton(1) && block == 0 && MouseInRange()) TimedBreaking();
+            if (Input.GetMouseButtonDown(1) && block != 0 && MouseInRange()) Build(block);
+        }
         
-        if (Input.GetMouseButton(1) && block == 0 && MouseInRange()) TimedBreaking();
-        if (Input.GetMouseButtonDown(1) && block != 0 && MouseInRange()) Build(block);
 
 
         //if (Input.GetKeyDown(KeyCode.P))
@@ -209,5 +213,13 @@ public class BlockInteractions : MonoBehaviour
         }
     }
 
-
+    public void EmptyInventory()
+    {
+        hasAxe = false;
+        hasSword = false;
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            inventory[i] = 0;
+        }
+    }
 }

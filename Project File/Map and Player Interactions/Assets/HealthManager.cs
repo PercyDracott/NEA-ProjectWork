@@ -26,12 +26,12 @@ public class HealthManager : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (playerHealth - damage >= 0)
+        if (playerHealth - damage > 0)
         {
             playerHealth -= damage;
             timeWhenDamage = Time.time;
         }
-        else playerHealth = 0;
+        else PlayerDeath();
         FindObjectOfType<AudioManager>().Play("Take Damage");
     }
 
@@ -53,5 +53,11 @@ public class HealthManager : MonoBehaviour
             }
             else healthToGain = 0;
         }        
+    }
+
+    void PlayerDeath()
+    {
+        playerHealth = 10;
+        FindObjectOfType<WorldEventManager>().PlayerDeath(gameObject);
     }
 }
