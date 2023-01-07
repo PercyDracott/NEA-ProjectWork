@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WorldEventManager : MonoBehaviour
@@ -34,5 +35,11 @@ public class WorldEventManager : MonoBehaviour
     public void PlayerRespawn(GameObject Player)
     {
         Player.transform.position = GetComponentInChildren<GenerationScriptV2>().PlayerSpawnPoint();
+    }
+
+    public void SaveAll()
+    {
+        GetComponentInChildren<GenerationScriptV2>().SaveMap();
+        //Add Player Saving
     }
 }

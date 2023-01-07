@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveY: 75
-  DayOrNightTime: 20
+  DayOrNightTime: 150
 --- !u!1 &11584744
 GameObject:
   m_ObjectHideFlags: 0
@@ -3110,7 +3110,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1183086934}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -451.39355, y: -102.19801, z: 16.74892}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4287,8 +4287,8 @@ MonoBehaviour:
   StoneSlider: {fileID: 11584746}
   RandomPercentFill: 62
   iterations: 6
-  TreePopulation: 20
-  Filename: TestFileName.txt
+  TreePopulation: 40
+  Filename: WorldFile.txt
 --- !u!4 &1645529104
 Transform:
   m_ObjectHideFlags: 0

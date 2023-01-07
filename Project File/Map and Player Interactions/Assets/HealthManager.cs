@@ -38,7 +38,7 @@ public class HealthManager : MonoBehaviour
     public void FallDamage(float distance)
     {
         // Debug.Log(Mathf.RoundToInt(distance / 4));
-        if (distance > 6) TakeDamage(Mathf.RoundToInt(distance / 4));
+        if (distance > 6) TakeDamage(Mathf.RoundToInt(distance / 2));
         
     }
 

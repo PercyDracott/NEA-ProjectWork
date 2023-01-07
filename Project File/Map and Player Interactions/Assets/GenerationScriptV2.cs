@@ -175,6 +175,7 @@ public class GenerationScriptV2 : MonoBehaviour
         AddTrees(TreePopulation, TestTileFG, Log, Leaf);
         Renderer(map, TestTileFG, TestTileBG);
         SaveMap();
+        terrainGenerationComplete = true;
         return true;
         //map = Generate2DArray(worldWidth, worldHeight);
         //cavemap = GenerateCaveMap(worldWidth, worldHeight);

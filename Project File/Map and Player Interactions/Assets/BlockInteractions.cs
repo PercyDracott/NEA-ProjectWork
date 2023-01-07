@@ -189,6 +189,10 @@ public class BlockInteractions : MonoBehaviour
             }
             sw.WriteLine(transform.position.x);
             sw.WriteLine(transform.position.y);
+            if (hasAxe) sw.WriteLine("1");
+            else sw.WriteLine("0");
+            if (hasSword) sw.WriteLine("1");
+            else sw.WriteLine("0");
         }
     }
 
@@ -207,6 +211,16 @@ public class BlockInteractions : MonoBehaviour
                 if (i < 10) inventory[i] = Convert.ToInt16(value);
                 if (i == 10) tempx = (float)Convert.ToDouble(value);
                 if (i == 11) tempy = (float)Convert.ToDouble(value);
+                if (i == 12)
+                {
+                    if (value == "1") hasAxe = true;
+                }
+                else hasAxe = false;
+                if (i == 13)
+                {
+                    if (value == "1") hasSword = true;
+                }
+                else hasSword = false;
                 i++;
             }
             transform.position = new Vector2(tempx,tempy);
