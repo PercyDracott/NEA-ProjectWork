@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 
@@ -23,10 +24,17 @@ public class BlockInteractions : MonoBehaviour
     float timemining;
     Vector2 mousePostionOnCall;
 
+    [SerializeField] private string TempID;
+
+    public string PlayerID { get; private set; }
+    public TextMeshPro iDText;
 
     void Start()
     {
         //transform.position = MapManagerObject.GetComponent<GenerationScriptV2>().PlayerSpawnPoint();
+        PlayerID = TempID;
+        iDText.text = PlayerID;
+
         MapManagerObject = GameObject.Find("GeneratorV2");
     }
 
