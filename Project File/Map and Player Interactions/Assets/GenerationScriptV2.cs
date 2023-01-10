@@ -309,11 +309,16 @@ public class GenerationScriptV2 : MonoBehaviour
 
     void GenerateSaveFile()
     {
-
-        if (!System.IO.File.Exists($"WorldSaves/{worldName}"))
+        if (File.Exists($"WorldSaves/{worldName}/worldSave.txt"))
+        {
+            Debug.Log("already there");
+            LoadMap();
+        }
+        else
         {
             Directory.CreateDirectory($"WorldSaves/{worldName}");
         }
+        
     }
     
     public void SaveMap()
@@ -343,7 +348,7 @@ public class GenerationScriptV2 : MonoBehaviour
             
             while ((value = sr.ReadLine()) != null)
             {
-                Debug.Log(Convert.ToInt16(value[1]));
+                //Debug.Log(Convert.ToInt16(value[1]));
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
                     map[x, y] = Convert.ToInt16(value[x]) - 48;
@@ -576,9 +581,9 @@ public class GenerationScriptV2 : MonoBehaviour
 
     public Vector3Int PlayerSpawnPoint()
     {
-        Debug.Log("called");
-        Debug.Log(worldHeight);
-        Debug.Log(worldWidth);
+        //Debug.Log("called");
+        //Debug.Log(worldHeight);
+        //Debug.Log(worldWidth);
 
         int tempy = worldHeight - 1;
         while (map[worldWidth/2, tempy] == 0)
@@ -586,7 +591,7 @@ public class GenerationScriptV2 : MonoBehaviour
             tempy--;
         }
         tempy += 2;
-        Debug.Log($"{worldWidth / 2}, {tempy}");
+        //Debug.Log($"{worldWidth / 2}, {tempy}");
         return new Vector3Int(worldWidth / 2, tempy, 0);
     }
 

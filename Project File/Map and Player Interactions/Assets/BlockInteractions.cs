@@ -36,6 +36,11 @@ public class BlockInteractions : MonoBehaviour
 
         SetPlayerName();
         MapManagerObject = GameObject.Find("GeneratorV2");
+        //MapManagerObject.GetComponent<GenerationScriptV2>().CurrentWorldName();
+        if (File.Exists($"WorldSaves/{MapManagerObject.GetComponent<GenerationScriptV2>().CurrentWorldName()}/{PlayerID}.txt"))
+        {
+            LoadPlayerState(MapManagerObject.GetComponent<GenerationScriptV2>().CurrentWorldName());
+        }
     }
 
     public void SetPlayerName()
