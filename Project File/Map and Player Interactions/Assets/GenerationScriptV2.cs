@@ -46,7 +46,7 @@ public class GenerationScriptV2 : MonoBehaviour
     [SerializeField] int iterations;
     [SerializeField] int TreePopulation;
 
-    [SerializeField] string worldName;
+    string worldName;
 
     int[,] map;
     int[,] cavemap;
@@ -67,6 +67,7 @@ public class GenerationScriptV2 : MonoBehaviour
     //        Debug.Log("Reloading");
     //        Generation();
     //    }
+    public void SetWorldName(string name) { worldName = name; }
         
     public int BreakBlock(int x, int y)
     {

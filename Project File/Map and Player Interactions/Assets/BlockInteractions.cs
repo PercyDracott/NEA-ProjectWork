@@ -24,7 +24,7 @@ public class BlockInteractions : MonoBehaviour
     float timemining;
     Vector2 mousePostionOnCall;
 
-    [SerializeField] private string TempID;
+    //[SerializeField] private string TempID;
 
     public string PlayerID { get; private set; }
     public TextMeshPro iDText;
@@ -32,10 +32,16 @@ public class BlockInteractions : MonoBehaviour
     void Start()
     {
         //transform.position = MapManagerObject.GetComponent<GenerationScriptV2>().PlayerSpawnPoint();
-        PlayerID = TempID;
-        iDText.text = PlayerID;
+        //PlayerID = TempID;
 
+        SetPlayerName();
         MapManagerObject = GameObject.Find("GeneratorV2");
+    }
+
+    public void SetPlayerName()
+    {
+        PlayerID = PassingVariables.playerID;
+        iDText.text = PlayerID;
     }
 
     // Update is called once per frame

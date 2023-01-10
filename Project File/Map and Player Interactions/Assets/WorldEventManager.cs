@@ -12,9 +12,11 @@ public class WorldEventManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GetComponentInChildren<GenerationScriptV2>().SetWorldName(PassingVariables.worldName);
+        Debug.Log(PassingVariables.worldName);
         GetComponentInChildren<GenerationScriptV2>().Generation();
         Instantiate(PlayerPreFab, GetComponentInChildren<GenerationScriptV2>().PlayerSpawnPoint(), Quaternion.identity);
-        Debug.Log("finito");
+        //Debug.Log("finito");
 
     }
 
