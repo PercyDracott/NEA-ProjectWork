@@ -22,9 +22,10 @@ public class TextChatManger : MonoBehaviour
     // Update is called once per frame
     void UpdateChat()
     {
+        chat.text = "";
         foreach (var item in messages)
         {
-            chat.text = chat.text + "\n" + item;
+            chat.text += "\n" + item;
         }
     }
 

@@ -197,7 +197,7 @@ TextureImporter:
         width: 60
         height: 48
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -205,6 +205,48 @@ TextureImporter:
       bones: []
       spriteID: 362763989f5a44b458485a00833a3efa
       internalID: -2008837569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Texture_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 36
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5bac699f78d0340409e46c63f2445ade
+      internalID: 803779449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Texture_6
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 48
+        width: 92
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f546b439137291408c00a1eac34a521
+      internalID: -2048865880
       vertices: []
       indices: 
       edges: []
@@ -223,6 +265,8 @@ TextureImporter:
       Inventory Texture_1: 1894594308
       Inventory Texture_3: 769563091
       Inventory Texture_4: -2008837569
+      Inventory Texture_5: 803779449
+      Inventory Texture_6: -2048865880
       Inventory Texture_2: 1694174897
       Inventory Texture_0: -1133910733
   spritePackingTag: 

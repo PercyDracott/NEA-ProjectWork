@@ -40,6 +40,15 @@ public class WorldEventManager : MonoBehaviour
     public void SaveAll()
     {
         GetComponentInChildren<GenerationScriptV2>().SaveMap();
-        //Add Player Saving
+
+        //Finding All the Players in the scene
+        GameObject[] players;
+        players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (var item in players)
+        {
+            item.GetComponent<BlockInteractions>().SavePlayerState(GetComponentInChildren<GenerationScriptV2>().CurrentWorldName());
+        }
+        
     }
 }

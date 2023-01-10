@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -45,7 +46,7 @@ public class GenerationScriptV2 : MonoBehaviour
     [SerializeField] int iterations;
     [SerializeField] int TreePopulation;
 
-    [SerializeField] string Filename;
+    [SerializeField] string worldName;
 
     int[,] map;
     int[,] cavemap;
@@ -146,6 +147,8 @@ public class GenerationScriptV2 : MonoBehaviour
     //    TestTileFG.SetTile(new Vector3Int(x, y, 0), null);
     //}
 
+    public string CurrentWorldName() { return (worldName); }
+
     public void GenerateFromSlider()
     {
         Seed = SeedSlider.value;
@@ -174,6 +177,7 @@ public class GenerationScriptV2 : MonoBehaviour
         ApplyCaves(map);
         AddTrees(TreePopulation, TestTileFG, Log, Leaf);
         Renderer(map, TestTileFG, TestTileBG);
+        GenerateSaveFile();
         SaveMap();
         terrainGenerationComplete = true;
         return true;
@@ -302,9 +306,18 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+    void GenerateSaveFile()
+    {
+
+        if (!System.IO.File.Exists($"WorldSaves/{worldName}"))
+        {
+            Directory.CreateDirectory($"WorldSaves/{worldName}");
+        }
+    }
+    
     public void SaveMap()
     {
-        using (StreamWriter sw = new StreamWriter(Filename))
+        using (StreamWriter sw = new StreamWriter($"WorldSaves/{worldName}/worldSave.txt"))
         {
             //sw.WriteLine(worldHeight);
             //sw.WriteLine(worldWidth);
@@ -323,7 +336,7 @@ public class GenerationScriptV2 : MonoBehaviour
     {
         int y = 0;
         
-        using (StreamReader sr = new StreamReader(Filename))
+        using (StreamReader sr = new StreamReader($"WorldSaves/{worldName}/worldSave.txt"))
         {
             string value;
             

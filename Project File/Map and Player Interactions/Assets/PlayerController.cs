@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -81,6 +82,7 @@ public class PlayerController : MonoBehaviour
         Vector2 localScale = gameObject.transform.localScale;
         localScale.x *= -1;
         transform.localScale = localScale;
+        GetComponentInChildren<MeshRenderer>().transform.localScale = localScale;
     }
 
     bool OnGround()

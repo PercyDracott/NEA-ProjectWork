@@ -187,9 +187,9 @@ public class BlockInteractions : MonoBehaviour
         else return false;
     }
 
-    public void SavePlayerState(string filename)
+    public void SavePlayerState(string worldName)
     {
-        using (StreamWriter sw = new StreamWriter(filename))
+        using (StreamWriter sw = new StreamWriter($"WorldSaves/{worldName}/{PlayerID}.txt"))
         {
             for (int i = 0; i < inventory.Length; i++)
             {
@@ -204,14 +204,14 @@ public class BlockInteractions : MonoBehaviour
         }
     }
 
-    public void LoadPlayerState(string filename)
+    public void LoadPlayerState(string worldName)
     {
         string value;
         int i = 0;
         float tempx = 0;
         float tempy = 0;
 
-        using (StreamReader sr = new StreamReader(filename))
+        using (StreamReader sr = new StreamReader($"WorldSaves/{worldName}/{PlayerID}.txt"))
         {            
             while ((value = sr.ReadLine()) != null)
             {

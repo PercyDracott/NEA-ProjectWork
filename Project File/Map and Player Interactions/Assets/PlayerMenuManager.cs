@@ -32,6 +32,7 @@ public class PlayerMenuManager : MonoBehaviour
 
     void TogglePauseMenu()
     {
+        Sound();
         if (!hasDeathMenuOpen)
         {
             if (hasPauseMenuOpen)
@@ -58,7 +59,7 @@ public class PlayerMenuManager : MonoBehaviour
         PauseMenu.SetActive(false);
         hasPauseMenuOpen = false;
         hasAnyMenuOpen = false;
-        
+        Sound();
     }
 
     public void Leave()
@@ -69,6 +70,8 @@ public class PlayerMenuManager : MonoBehaviour
         PauseMenu.SetActive(false);
         hasPauseMenuOpen = false;
         hasAnyMenuOpen = false;
+        Save();
+        Sound();
     }
 
     public void EnableDeathScreen()
@@ -76,6 +79,7 @@ public class PlayerMenuManager : MonoBehaviour
         DeathMenu.SetActive(true);
         hasAnyMenuOpen = true;
         hasDeathMenuOpen = true;
+
     }
 
     public void Respawn()
@@ -84,8 +88,16 @@ public class PlayerMenuManager : MonoBehaviour
         hasAnyMenuOpen = false;
         hasDeathMenuOpen = false;
         FindObjectOfType<WorldEventManager>().PlayerRespawn(Player);
+        Sound();
     }
 
+    public void Save()
+    {
+        FindObjectOfType<WorldEventManager>().SaveAll();
+        Sound();
+    }
+
+    void Sound() { FindObjectOfType<AudioManager>().Play("Hud Interact"); }
 
 
 
