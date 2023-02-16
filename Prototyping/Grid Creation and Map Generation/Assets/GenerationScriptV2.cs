@@ -6,6 +6,71 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
+public class CustomPerlinNoise
+{
+    //int octaves = 6;
+    //float persistence = 0.5f;
+    //float lacunarity = 2f;
+    float[] noiseArray;
+
+    public CustomPerlinNoise(float lacunarity, float persistence, int octaves, int length)
+    {
+        noiseArray = GeneratePerlinNoise(length, octaves, persistence, lacunarity);
+    }
+
+    static float[] GeneratePerlinNoise(int length, int octaves, float persistence, float lacunarity)
+    {
+        float[] perlinNoise = new float[length];
+        float amplitude = 1f;
+        float frequency = 1f;
+
+        for (int i = 0; i < octaves; i++)
+        {
+            for (int x = 0; x < length; x++)
+            {
+                perlinNoise[x] += (float)Noise(x * frequency) * amplitude;
+            }
+
+            frequency *= lacunarity;
+            amplitude *= persistence;
+        }
+
+        // Normalize the noise values to be between 0 and 1
+        for (int x = 0; x < length; x++)
+        {
+            perlinNoise[x] = (perlinNoise[x] + 1f) / 2f;
+        }
+
+        return perlinNoise;
+    }
+
+    static double Noise(double x)
+    {
+        int xInt = (int)x & 0xff;
+        double xFract = x - (int)x;
+
+        double n0 = Math.Sin(xInt) * 43758.5453123;
+        double n1 = Math.Sin(xInt + 1) * 43758.5453123;
+
+        return Interpolate(n0, n1, xFract);
+    }
+
+    static double Interpolate(double a, double b, double x)
+    {
+        double ft = x * Math.PI;
+        double f = (1 - Math.Cos(ft)) * 0.5;
+
+        return a * (1 - f) + b * f;
+    }
+
+    public float returnPerlinValue(int xValue)
+    {
+        return noiseArray[xValue];
+    }
+
+
+}
+
 
 public class GenerationScriptV2 : MonoBehaviour
 {
@@ -46,12 +111,17 @@ public class GenerationScriptV2 : MonoBehaviour
 
     int[,] map;
     int[,] cavemap;
-    
+
+    CustomPerlinNoise SoilPerlinNoise;
+    CustomPerlinNoise StonePerlinNoise;
+
+
 
     void Start()
     {
         
         Generation();
+
     }
 
     //void Update()
@@ -86,6 +156,9 @@ public class GenerationScriptV2 : MonoBehaviour
         StoneSeed = (float)UnityEngine.Random.Range(0.0f, 1000.0f);
         //CaveSeed = (float)UnityEngine.Random.Range(0.02f, 0.05f);
         OreSeed = (float)UnityEngine.Random.Range(0.03f, 0.05f);
+        
+        SoilPerlinNoise = new CustomPerlinNoise(2f,0.5f,6, worldWidth);
+        StonePerlinNoise = new CustomPerlinNoise(2f, 0.5f, 6, worldWidth);
 
         map = new int[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
@@ -268,11 +341,12 @@ public class GenerationScriptV2 : MonoBehaviour
         for (int x = 0; x < width; x++)
         {
             //Making the Soil
-            perlinNoiseSoil = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * height / 5);
+            perlinNoiseSoil = Mathf.RoundToInt(SoilPerlinNoise.returnPerlinValue(x) * height / 5);
             perlinNoiseSoil += height / 3;
             //Debug.Log($"Soil Noise Value is {perlinNoiseSoil}");
             for (int y = 0; y < perlinNoiseSoil; y++)
             {
+                Debug.Log(SoilPerlinNoise.returnPerlinValue(x));
                 WorldMap[x, y] = 1;
             }
 
