@@ -17,20 +17,40 @@ public class Player : MonoBehaviour
 
     public static void Spawn(ushort id, string username)
     {
+        foreach (Player otherPlayers in list.Values)
+        {
+            otherPlayers.SendSpawn(id);
+        }
+        
         Player player = Instantiate(GameLogic.Instance.PlayerPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<Player>();
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.userName = string.IsNullOrEmpty(username) ? "Guest" : username;
 
+        player.SendSpawn();
         list.Add(id, player);
     }
 
     private void SendSpawn()
     {
         RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.playerSpawned);
+        
+        NetworkManager.Instance.Server.SendToAll(AddSpawnData(message));
+    }
+
+    private Message AddSpawnData(Message message)
+    {
         message.AddUShort(Id);
         message.AddString(userName);
-        message.A
+        message.AddVector3(transform.position);
+        return message;
+    }
+
+    private void SendSpawn(ushort toClientId)
+    {
+        RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.playerSpawned);
+
+        NetworkManager.Instance.Server.Send(AddSpawnData(message), toClientId);
     }
 
     [MessageHandler((ushort)ClientToServerId.name)]

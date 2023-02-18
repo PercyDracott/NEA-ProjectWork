@@ -8,6 +8,11 @@ public enum ClientToServerId : ushort
     name = 1,
 }
 
+public enum ServerToClientId : ushort
+{
+    playerSpawned = 1,
+}
+
 public class NetworkManager : MonoBehaviour
 {
     private static NetworkManager instance;
