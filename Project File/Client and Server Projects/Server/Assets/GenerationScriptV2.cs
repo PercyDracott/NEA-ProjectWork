@@ -163,7 +163,7 @@ public class GenerationScriptV2 : MonoBehaviour
         Renderer(map, TestTileFG, TestTileBG);
     }
 
-    public bool Generation(bool isLoadingFromSave, string saveName)
+    public bool Generation(string saveName)
     {
         worldName = saveName;
         TestTileBG.ClearAllTiles();
@@ -175,9 +175,9 @@ public class GenerationScriptV2 : MonoBehaviour
 
         map = new int[worldWidth, worldHeight];
 
-        if (isLoadingFromSave)
+        if (IsFromSave())
         {
-            GenerateSaveFile();
+            //GenerateSaveFile();
             LoadMap();
             SaveMap();
         }
@@ -200,6 +200,12 @@ public class GenerationScriptV2 : MonoBehaviour
         //map = TerrainGeneration(map);
         //Renderer(map, GrassSoil, Stone, TestTileMap);
     }
+
+    public int[,] SendMap()
+    {
+        return map;
+    }
+
 
     //public int[,] Generate2DArray(int worldWidth, int worldHeight)
     //{
@@ -328,6 +334,15 @@ public class GenerationScriptV2 : MonoBehaviour
             Directory.CreateDirectory($"WorldSaves/{worldName}");
         }
     }
+
+    bool IsFromSave()
+    {
+        if (System.IO.File.Exists($"WorldSaves/{worldName}")) return true;
+        return false;
+        
+    }
+
+
     
     public void SaveMap()
     {
@@ -552,7 +567,7 @@ public class GenerationScriptV2 : MonoBehaviour
                 {
                     if (Mathf.Abs(holdingvariable - positionHistory[j]) < 6)
                     {
-                        Debug.Log(Mathf.Abs(holdingvariable - positionHistory[j]));
+                        //Debug.Log(Mathf.Abs(holdingvariable - positionHistory[j]));
 
                         collisionAvoidance = true;
                     }

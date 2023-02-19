@@ -1,10 +1,14 @@
 using RiptideNetworking;
 using RiptideNetworking.Utils;
+using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum ServerToClientId : ushort
 {
     playerSpawned = 1,
+    map,
 }
 
 public enum ClientToServerId : ushort
@@ -34,6 +38,10 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private ushort port;
     [SerializeField] private ushort maxClientCount;
 
+    //[SerializeField] private TMP_InputField ipField;
+    [SerializeField] private TMP_InputField portField;
+    
+
 
     private void Awake()
     {
@@ -42,10 +50,12 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
         Server = new Server();
-        Server.Start(port, maxClientCount);
+        //Server.Start(port, maxClientCount);
         Server.ClientDisconnected += PlayerLeft;
+        //Server.ClientConnected += SendMap;
     }
 
     private void FixedUpdate()
@@ -62,5 +72,20 @@ public class NetworkManager : MonoBehaviour
     {
         Destroy(Player.list[e.Id].gameObject);
     }
+
+    public void StartFromButtons()
+    {
+        if (!string.IsNullOrEmpty(portField.text))
+        {
+            port = Convert.ToUInt16(portField.text);
+            //port = Convert.ToUInt16(ipField.text);
+            Server.Start(port, maxClientCount);
+        }
+        
+    }
+
+    
+
+    
 
 }

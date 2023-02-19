@@ -21,12 +21,15 @@ public class Player : MonoBehaviour
         {
             otherPlayers.SendSpawn(id);
         }
-        
+
+
+
         Player player = Instantiate(GameLogic.Instance.PlayerPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<Player>();
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.userName = string.IsNullOrEmpty(username) ? "Guest" : username;
 
+        player.SendMap(player.Id);
         player.SendSpawn();
         list.Add(id, player);
     }
@@ -34,7 +37,7 @@ public class Player : MonoBehaviour
     private void SendSpawn()
     {
         RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.playerSpawned);
-        
+
         NetworkManager.Instance.Server.SendToAll(AddSpawnData(message));
     }
 
@@ -53,11 +56,38 @@ public class Player : MonoBehaviour
         NetworkManager.Instance.Server.Send(AddSpawnData(message), toClientId);
     }
 
+    private void SendMap(ushort toClientId)
+    {
+        int[,] maptoSend = FindObjectOfType<GenerationScriptV2>().SendMap();
+        Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.map);
+
+        List<int> TempList = new List<int>();
+        int[] mapAs1DArray;
+        for (int y = 0; y < maptoSend.GetLength(0); y++)
+        {
+            for (int x = 0; x < maptoSend.GetLength(1); x++)
+            {
+                TempList.Add(maptoSend[y, x]);
+            }
+        }
+        //int[] temporaryarray = new int[maptoSend.GetLength(0)];
+        //temporaryarray[0] = maptoSend[i];
+        mapAs1DArray = TempList.ToArray();
+
+        message.AddInt(maptoSend.GetLength(0));
+        message.AddInt(maptoSend.GetLength(1));
+        message.AddInts(mapAs1DArray, false, true);
+
+        NetworkManager.Instance.Server.Send(message, toClientId);
+
+    }
+
     [MessageHandler((ushort)ClientToServerId.name)]
     private static void Name(ushort fromClientId, Message message)
     {
         Spawn(fromClientId, message.GetString());
     }
+
 
     
 }

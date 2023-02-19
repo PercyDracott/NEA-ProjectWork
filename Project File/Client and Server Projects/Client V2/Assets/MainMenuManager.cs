@@ -15,12 +15,7 @@ public class MainMenuManager : MonoBehaviour
         PassingVariables.playerID = userNameInput.text;
         PassingVariables.worldName = worldNameInput.text;
         FindObjectOfType<AudioManager>().Play("Hud Interact");
-        //SceneManager.LoadScene("RockAndCaves");
-        FindObjectOfType<WorldEventManager>().GenerateWorld(false, worldNameInput.text);
-    }
+        SceneManager.LoadScene("RockAndCaves");
 
-    public void Load()
-    {
-        FindObjectOfType<WorldEventManager>().GenerateWorld(true, worldNameInput.text);
     }
 }

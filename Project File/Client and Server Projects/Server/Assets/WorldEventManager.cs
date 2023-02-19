@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class WorldEventManager : MonoBehaviour
 {
     public bool EnableDayNightCycle = true;
     public GameObject PlayerPreFab;
+    [SerializeField] private TMP_InputField worldNameField;
     //public GameObject MapManager;
 
     // Start is called before the first frame update
@@ -18,11 +20,11 @@ public class WorldEventManager : MonoBehaviour
 
     }
 
-    public void GenerateWorld(bool isLoading, string name)
+    public void GenerateWorld()
     {
-        GetComponentInChildren<GenerationScriptV2>().SetWorldName(PassingVariables.worldName);
-        Debug.Log(PassingVariables.worldName);
-        GetComponentInChildren<GenerationScriptV2>().Generation(isLoading, name);
+        //GetComponentInChildren<GenerationScriptV2>().SetWorldName(PassingVariables.worldName);
+        //Debug.Log(PassingVariables.worldName);
+        GetComponentInChildren<GenerationScriptV2>().Generation(worldNameField.text);
     }
 
     // Update is called once per frame
