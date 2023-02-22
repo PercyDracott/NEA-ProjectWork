@@ -1,7 +1,6 @@
-using System.Collections;
+using RiptideNetworking;
 using System.Collections.Generic;
 using UnityEngine;
-using RiptideNetworking;
 
 public class Player : MonoBehaviour
 {
@@ -45,7 +44,7 @@ public class Player : MonoBehaviour
     {
         message.AddUShort(Id);
         message.AddString(userName);
-        message.AddVector3(transform.position);
+        message.AddVector3(FindObjectOfType<GenerationScriptV2>().PlayerSpawnPoint());
         return message;
     }
 
@@ -58,27 +57,48 @@ public class Player : MonoBehaviour
 
     private void SendMap(ushort toClientId)
     {
-        int[,] maptoSend = FindObjectOfType<GenerationScriptV2>().SendMap();
-        Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.map);
+        byte[,] maptoSend = FindObjectOfType<GenerationScriptV2>().SendMap();
+        
 
-        List<int> TempList = new List<int>();
-        int[] mapAs1DArray;
-        for (int y = 0; y < maptoSend.GetLength(0); y++)
+        //List<int> TempList = new List<int>();
+        //int[] mapAs1DArray;
+        //for (int y = 0; y < maptoSend.GetLength(0); y++)
+        //{
+        //    for (int x = 0; x < maptoSend.GetLength(1); x++)
+        //    {
+        //        TempList.Add(maptoSend[y, x]);
+        //    }
+        //}
+        ////int[] temporaryarray = new int[maptoSend.GetLength(0)];
+        ////temporaryarray[0] = maptoSend[i];
+        //mapAs1DArray = TempList.ToArray();
+
+        //message.AddInt(maptoSend.GetLength(0));
+        //message.AddInt(maptoSend.GetLength(1));
+        ////message.AddInts(mapAs1DArray, false, true);
+        ///
+        for (short y = 0; y < maptoSend.GetLength(1); y++)
         {
-            for (int x = 0; x < maptoSend.GetLength(1); x++)
+            //message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.map);
+            Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.map);
+            byte[] tempXS = new byte[maptoSend.GetLength(0)];
+            for (int x = 0; x < maptoSend.GetLength(0); x++)
             {
-                TempList.Add(maptoSend[y, x]);
+                tempXS[x] = maptoSend[x, y];
             }
+            //
+            Debug.LogAssertion(y);
+            message.AddShort(y);
+            message.AddInt(FindObjectOfType<GenerationScriptV2>().worldWidth);
+            message.AddBytes(tempXS, false, true);
+            Debug.Log("sending map to client");
+            NetworkManager.Instance.Server.Send(message, toClientId);
         }
-        //int[] temporaryarray = new int[maptoSend.GetLength(0)];
-        //temporaryarray[0] = maptoSend[i];
-        mapAs1DArray = TempList.ToArray();
 
-        message.AddInt(maptoSend.GetLength(0));
-        message.AddInt(maptoSend.GetLength(1));
-        message.AddInts(mapAs1DArray, false, true);
 
-        NetworkManager.Instance.Server.Send(message, toClientId);
+
+        //Debug.Log("sending map to client");
+        //NetworkManager.Instance.Server.Send(message, toClientId);
 
     }
 
@@ -89,5 +109,12 @@ public class Player : MonoBehaviour
     }
 
 
-    
+
+
+
+
 }
+
+
+
+

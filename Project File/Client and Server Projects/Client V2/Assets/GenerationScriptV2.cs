@@ -48,14 +48,17 @@ public class GenerationScriptV2 : MonoBehaviour
 
     string worldName;
 
-    int[,] map;
-    int[,] cavemap;
-    
+    byte[,] map;
+    byte[,] cavemap;
+    //int layer;
 
     void Start()
     {
         worldWidth = 1024;
         worldHeight = 256;
+        map = new byte[worldWidth, worldHeight];
+
+        //layer = 0;
 
         //terrainGenerationComplete = Generation();
     }
@@ -109,7 +112,7 @@ public class GenerationScriptV2 : MonoBehaviour
         //Debug.Log($"buildblock called, position {x}, {y}");
         if ((map[x-1,y] != 0 || map[x + 1, y] != 0 || map[x, y - 1] != 0 || map[x, y + 1] != 0) && (map[x,y] == 0 || map[x, y] == 8 || map[x, y] == 9))
         {
-            map[x, y] = block;
+            map[x, y] = (byte)block;
             TileBase placing = Plank;
             switch (block) 
             {
@@ -156,7 +159,7 @@ public class GenerationScriptV2 : MonoBehaviour
         StoneSeed = StoneSlider.value;
         //CaveSeed = CaveSlider.value;
         
-        map = new int[worldWidth, worldHeight];
+        map = new byte[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
         ApplyCaves(map);
         AddTrees(TreePopulation, TestTileFG, Log, Leaf);
@@ -173,7 +176,7 @@ public class GenerationScriptV2 : MonoBehaviour
         //CaveSeed = (float)UnityEngine.Random.Range(0.02f, 0.05f);
         OreSeed = (float)UnityEngine.Random.Range(0.03f, 0.05f);
 
-        map = new int[worldWidth, worldHeight];
+        map = new byte[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
         ApplyCaves(map);
         AddTrees(TreePopulation, TestTileFG, Log, Leaf);
@@ -259,13 +262,24 @@ public class GenerationScriptV2 : MonoBehaviour
 
     //    return map;
     //}
-    public void setMap(int[,] newmap)
+    public void setMapByLayer(byte[] newmap, short layer)
     {
-        map = newmap;
+        Debug.Log($"layer is {layer}");
+        for (int x = 0; x < map.GetLength(0); x++)
+        {
+            
+            map[x, layer] = newmap[x];
+        }
+        if (layer == worldHeight - 1)
+        {
+            Renderer(map);
+        }
+        //layer++;
+        
     }
 
 
-    public void Renderer(int[,] MapToRender)
+    public void Renderer(byte[,] MapToRender)
     {
         TestTileFG.ClearAllTiles();
         TestTileBG.ClearAllTiles();
@@ -351,7 +365,7 @@ public class GenerationScriptV2 : MonoBehaviour
                 Debug.Log(Convert.ToInt16(value[1]));
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
-                    map[x, y] = Convert.ToInt16(value[x]) - 48;
+                    map[x, y] = (byte)(Convert.ToInt16(value[x]) - 48);
                 }
                 y++;
             }
@@ -367,7 +381,7 @@ public class GenerationScriptV2 : MonoBehaviour
     /// <param name="GrassSoil"></param>
     /// <param name="Stone"></param>
     /// <param name="TestTileMap"></param>
-    public void OptimisedTerrainGeneration(int[,] WorldMap, int width, int height, TileBase GrassSoil, TileBase Stone)
+    public void OptimisedTerrainGeneration(byte[,] WorldMap, int width, int height, TileBase GrassSoil, TileBase Stone)
     {
         int perlinNoiseSoil;
         int perlinNoiseStone;
@@ -413,7 +427,7 @@ public class GenerationScriptV2 : MonoBehaviour
     /// <param name="map"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    public void ApplyCaves(int[,] map)
+    public void ApplyCaves(byte[,] map)
     {
         //Version 1
         //for (int x = 0; x < width; x++)
@@ -458,12 +472,12 @@ public class GenerationScriptV2 : MonoBehaviour
 
     public void CaveGeneration()
     {
-        cavemap = new int[worldWidth, worldHeight];
+        cavemap = new byte[worldWidth, worldHeight];
         for (int x = 0; x < worldWidth; x++)
         {
             for (int y = 0; y < worldHeight; y++)
             {
-                cavemap[x, y] = UnityEngine.Random.Range(0, 100) < RandomPercentFill ? 1 : 0;
+                cavemap[x, y] = (byte)(UnityEngine.Random.Range(0, 100) < RandomPercentFill ? 1 : 0);
             }
         }
     }
@@ -495,8 +509,11 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
-
-
+    public byte[,] sendMap()
+    {
+        return map;
+    }
+ 
     private int GetNeighbours(int[,] tempmap, int xs, int ys, int neighbours)
     {
         for (int x = xs - 1; x <= xs + 1; x++)
