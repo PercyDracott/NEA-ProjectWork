@@ -3,6 +3,7 @@ using RiptideNetworking;
 using RiptideNetworking.Utils;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class Player : MonoBehaviour
 {
@@ -15,6 +16,20 @@ public class Player : MonoBehaviour
     private void OnDestroy()
     {
         list.Remove(Id);
+    }
+
+    private void FixedUpdate()
+    {
+        PassingPlayerPositionToServer();
+    }
+
+    private void PassingPlayerPositionToServer()
+    {
+        //Debug.Log("positon Update called");
+        RiptideNetworking.Message message = Message.Create(MessageSendMode.unreliable, (ushort)ClientToServerId.updatePlayerPosition);
+        message.AddVector3(transform.position);
+        message.AddUShort(Id);
+        NetworkManager.Instance.Client.Send(message);
     }
 
     public static void Spawn(ushort id, string username, Vector3 position)
@@ -74,7 +89,7 @@ public class Player : MonoBehaviour
         message.GetBytes(lengthofByteArray, ByteArray);
         //short LayerInteger = message.GetShort();
         //Debug.Log(LayerInteger);
-        Debug.LogAssertion(Layer);
+        //Debug.LogAssertion(Layer);
         Debug.Log("Received Call From Server To Build Map");
         
         CallMapBuild(ByteArray, Layer);

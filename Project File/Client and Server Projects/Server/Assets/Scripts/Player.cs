@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
 
 
 
-        Player player = Instantiate(GameLogic.Instance.PlayerPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<Player>();
+        Player player = Instantiate(GameLogic.Instance.PlayerPrefab, FindObjectOfType<GenerationScriptV2>().PlayerSpawnPoint(), Quaternion.identity).GetComponent<Player>();
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.userName = string.IsNullOrEmpty(username) ? "Guest" : username;
@@ -102,7 +102,20 @@ public class Player : MonoBehaviour
 
     }
 
-    [MessageHandler((ushort)ClientToServerId.name)]
+
+
+    [MessageHandler((ushort)(ClientToServerId.updatePlayerPosition))]
+    private static void PlayerPos(Message message)
+    {
+        Vector3 positionFromMessage = message.GetVector3();
+        ushort playerIdFromMessage = message.GetUShort();
+        Debug.Log($"CALLED POSITION UPDATE, {positionFromMessage.x}:{positionFromMessage.y}");
+        Player.list[playerIdFromMessage].transform.position = positionFromMessage;
+        message.Release();
+
+    }
+
+    [MessageHandler((ushort)(ClientToServerId.name))]
     private static void Name(ushort fromClientId, Message message)
     {
         Spawn(fromClientId, message.GetString());
@@ -110,7 +123,7 @@ public class Player : MonoBehaviour
 
 
 
-
+    
 
 
 }

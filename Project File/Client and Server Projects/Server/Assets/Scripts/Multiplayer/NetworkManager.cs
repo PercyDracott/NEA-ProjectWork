@@ -14,6 +14,8 @@ public enum ServerToClientId : ushort
 public enum ClientToServerId : ushort
 {
     name = 1,
+    updatePlayerPosition,
+    
 }
 
 public class NetworkManager : MonoBehaviour
@@ -56,6 +58,7 @@ public class NetworkManager : MonoBehaviour
         //Server.Start(port, maxClientCount);
         Server.ClientDisconnected += PlayerLeft;
         //Server.ClientConnected += SendMap;
+        
     }
 
     private void FixedUpdate()
@@ -83,6 +86,10 @@ public class NetworkManager : MonoBehaviour
         }
         
     }
+
+    
+
+    
 
     
 
