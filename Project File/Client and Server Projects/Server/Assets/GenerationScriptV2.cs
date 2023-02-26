@@ -35,8 +35,8 @@ public class GenerationScriptV2 : MonoBehaviour
     [SerializeField] TileBase Leaf;
     [SerializeField] TileBase Plank;
 
-    [SerializeField] Tilemap TestTileFG;
-    [SerializeField] Tilemap TestTileBG;
+    [SerializeField] public Tilemap TestTileFG;
+    [SerializeField] public Tilemap TestTileBG;
 
     [SerializeField] public Slider SeedSlider;
     [SerializeField] public Slider StoneSlider;
@@ -139,6 +139,39 @@ public class GenerationScriptV2 : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void ServerUpdatingBlock(int block, int x, int y)
+    {
+        map[x, y] = (byte)block;
+        TileBase placing = Plank;
+        switch (block)
+        {
+            case 1:
+                placing = GrassSoil;
+                break;
+            case 2:
+                placing = Stone;
+                break;
+            case 4:
+                placing = Log;
+                break;
+            case 5:
+                placing = Leaf;
+                break;
+            case 6:
+                placing = Plank;
+                break;
+            default:
+                break;
+
+        }
+        Debug.Log(map[x, y]);
+        
+        TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
+        TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
+        //Renderer(map, TestTileFG, TestTileBG);
+        //Debug.Log("GenerationScript Called");
     }
 
     //public void BuildBlock(int block, int x, int y)

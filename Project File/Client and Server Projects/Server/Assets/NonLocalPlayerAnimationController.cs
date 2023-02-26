@@ -20,5 +20,11 @@ public class NonLocalPlayerAnimationController : MonoBehaviour
             animator.Play("PlayerWalk");
         }
         else animator.Play("PlayerIdle");
+
+        //if (GetComponent<Rigidbody2D>().velocity.x < 0)
+        //{
+        //    transform.localScale = new Vector3(1, 1, 1);
+        //}
+        //else transform.localScale = Vector3.one;
     }
 }

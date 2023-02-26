@@ -102,15 +102,31 @@ public class Player : MonoBehaviour
 
     }
 
+    private void FixedUpdate()
+    {
+        SyncNonLocalPlayers();
+    }
+
+    private void SyncNonLocalPlayers()
+    {
+        foreach (Player players in list.Values)
+        {
+            Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.syncNonLocalPosition);
+            message.AddUShort(players.Id);
+            message.AddVector3(players.gameObject.transform.position);
+            NetworkManager.Instance.Server.SendToAll(message);
+        }
+    }
+
 
 
     [MessageHandler((ushort)(ClientToServerId.updatePlayerPosition))]
-    private static void PlayerPos(Message message)
+    private static void PlayerPos(ushort fromClientId, Message message)
     {
         Vector3 positionFromMessage = message.GetVector3();
-        ushort playerIdFromMessage = message.GetUShort();
-        Debug.Log($"CALLED POSITION UPDATE, {positionFromMessage.x}:{positionFromMessage.y}");
-        Player.list[playerIdFromMessage].transform.position = positionFromMessage;
+        //ushort playerIdFromMessage = message.GetUShort();
+        //Debug.Log($"CALLED POSITION UPDATE, {positionFromMessage.x}:{positionFromMessage.y}");
+        Player.list[fromClientId].transform.position = positionFromMessage;
         message.Release();
 
     }
@@ -121,9 +137,17 @@ public class Player : MonoBehaviour
         Spawn(fromClientId, message.GetString());
     }
 
+    [MessageHandler((ushort)ClientToServerId.updateServerMap)]
+    private static void UpdateMap(ushort fromClientId, Message message)
+    {
+        Vector2 BlockPos = message.GetVector2();
+        int block = message.GetInt();
+        //Debug.Log($"Block Update Called at {(int)BlockPos.x}:{(int)BlockPos.y} for {block}");
+        FindObjectOfType<GenerationScriptV2>().ServerUpdatingBlock(block, (int)BlockPos.x, (int)BlockPos.y);
+        message.Release();
+    }
 
 
-    
 
 
 }

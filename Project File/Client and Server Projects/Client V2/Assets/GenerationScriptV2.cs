@@ -92,6 +92,7 @@ public class GenerationScriptV2 : MonoBehaviour
             }
             else map[x, y] = 0;
             FindObjectOfType<AudioManager>().Play("Block Break");
+            FindObjectOfType<Player>().SendBlockUpdateToServer((byte)x, (byte)y, map[x,y]);
             return block;
         }
         return 0;
@@ -139,6 +140,7 @@ public class GenerationScriptV2 : MonoBehaviour
             TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
             TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
             FindObjectOfType<AudioManager>().Play("Block Place");
+            FindObjectOfType<Player>().SendBlockUpdateToServer((byte)x, (byte)y, map[x, y]);
             return true;
         }
         return false;

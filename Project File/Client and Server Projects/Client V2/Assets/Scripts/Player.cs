@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
         //Debug.Log("positon Update called");
         RiptideNetworking.Message message = Message.Create(MessageSendMode.unreliable, (ushort)ClientToServerId.updatePlayerPosition);
         message.AddVector3(transform.position);
-        message.AddUShort(Id);
+        //message.AddUShort(Id);
         NetworkManager.Instance.Client.Send(message);
     }
 
@@ -66,6 +66,14 @@ public class Player : MonoBehaviour
     //    FindObjectOfType<GenerationScriptV2>().setMap(map);
     //}
 
+    public void SendBlockUpdateToServer(byte x, byte y, int block)
+    {
+        RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.updateServerMap);
+        message.AddVector2(new Vector2Int(x, y));
+        message.AddInt(block);
+        NetworkManager.Instance.Client.Send(message);
+    }
+
     private static void CallMapBuild(byte[] mapSlice, short mapLayer)
     {
         FindObjectOfType<GenerationScriptV2>().setMapByLayer(mapSlice, mapLayer);
@@ -97,6 +105,19 @@ public class Player : MonoBehaviour
        
     }
 
-    
+    [MessageHandler((ushort)(ServerToClientId.syncNonLocalPosition))]
+    private static void SyncingPlayers(Message message)
+    {
+        ushort playerID = message.GetUShort();
+        Vector3 playerPosition = message.GetVector3();
+        if (playerID != NetworkManager.Instance.Client.Id)
+        {
+            Player.list[playerID].gameObject.transform.position = playerPosition;
+        }        
+        message.Release();
+
+    }
+
+
 
 }

@@ -9,13 +9,15 @@ public enum ServerToClientId : ushort
 {
     playerSpawned = 1,
     map,
+    syncNonLocalPosition,
 }
 
 public enum ClientToServerId : ushort
 {
     name = 1,
     updatePlayerPosition,
-    
+    updateServerMap,
+
 }
 
 public class NetworkManager : MonoBehaviour
@@ -85,14 +87,28 @@ public class NetworkManager : MonoBehaviour
             Server.Start(port, maxClientCount);
         }
         
+
+        
     }
 
+    public void StopFromButton()
+    {
+        Server.Stop();
+    }
     
+    //[MessageHandler((ushort)ClientToServerId.updatePlayerPosition)]
+    //private static void PlayerPos(Message message)
+    //{
+    //    Debug.Log("Received Call");
 
-    
+    //}
 
-    
 
-    
+
+
+
+
+
+
 
 }

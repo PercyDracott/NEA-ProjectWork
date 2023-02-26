@@ -7,12 +7,14 @@ public enum ServerToClientId : ushort
 {
     playerSpawned = 1,
     map,
+    syncNonLocalPosition,
 }
 
 public enum ClientToServerId : ushort
 {
     name = 1,
     updatePlayerPosition,
+    updateServerMap,
     
 }
 
