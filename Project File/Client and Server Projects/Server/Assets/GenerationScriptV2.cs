@@ -35,8 +35,8 @@ public class GenerationScriptV2 : MonoBehaviour
     [SerializeField] TileBase Leaf;
     [SerializeField] TileBase Plank;
 
-    [SerializeField] public Tilemap TestTileFG;
-    [SerializeField] public Tilemap TestTileBG;
+    public Tilemap TestTileFG;
+    public Tilemap TestTileBG;
 
     [SerializeField] public Slider SeedSlider;
     [SerializeField] public Slider StoneSlider;
@@ -162,12 +162,19 @@ public class GenerationScriptV2 : MonoBehaviour
             case 6:
                 placing = Plank;
                 break;
+            case 8:
+                placing = SoilBG;
+                break;
+            case 9:
+                placing = StoneBG;
+                break;
             default:
                 break;
 
         }
         Debug.Log(map[x, y]);
-        
+        TestTileFG.enabled = true;
+        //TestTileFG.
         TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
         TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
         //Renderer(map, TestTileFG, TestTileBG);

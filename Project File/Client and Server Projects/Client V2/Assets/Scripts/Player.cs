@@ -69,7 +69,8 @@ public class Player : MonoBehaviour
     public void SendBlockUpdateToServer(byte x, byte y, int block)
     {
         RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.updateServerMap);
-        message.AddVector2(new Vector2Int(x, y));
+        message.AddByte(x);
+        message.AddByte(y);
         message.AddInt(block);
         NetworkManager.Instance.Client.Send(message);
     }
@@ -115,6 +116,19 @@ public class Player : MonoBehaviour
             Player.list[playerID].gameObject.transform.position = playerPosition;
         }        
         message.Release();
+
+    }
+
+    [MessageHandler((ushort)(ServerToClientId.syncMapUpdate))]
+    private static void SyncingMaps(Message message)
+    {
+        byte xPos = message.GetByte();
+        byte yPos = message.GetByte();
+        int block = message.GetInt();
+        //Debug.Log($"Block Update Called at {(int)BlockPos.x}:{(int)BlockPos.y} for {block}");
+        FindObjectOfType<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
+        message.Release();
+        //UpdatePlayerMaps(block, xPos, yPos, fromClientId);
 
     }
 

@@ -98,6 +98,46 @@ public class GenerationScriptV2 : MonoBehaviour
         return 0;
     }
 
+    public void ServerUpdatingBlock(int block, int x, int y)
+    {
+        map[x, y] = (byte)block;
+        TileBase placing = Plank;
+        switch (block)
+        {
+            case 1:
+                placing = GrassSoil;
+                break;
+            case 2:
+                placing = Stone;
+                break;
+            case 4:
+                placing = Log;
+                break;
+            case 5:
+                placing = Leaf;
+                break;
+            case 6:
+                placing = Plank;
+                break;
+            case 8:
+                placing = SoilBG;
+                break;
+            case 9:
+                placing = StoneBG;
+                break;
+            default:
+                break;
+
+        }
+        Debug.Log(map[x, y]);
+        TestTileFG.enabled = true;
+        //TestTileFG.
+        TestTileFG.SetTile(new Vector3Int((byte)x, (byte)y, 0), placing);
+        TestTileFG.RefreshTile(new Vector3Int((byte)x, (byte)y, 0));
+        //Renderer(map, TestTileFG, TestTileBG);
+        //Debug.Log("GenerationScript Called");
+    }
+
     public int ReturnTypeOfBlock(int x, int y)
     {
         if (!(map[x, y] == 8 || map[x, y] == 9 || map[x, y] == 0))

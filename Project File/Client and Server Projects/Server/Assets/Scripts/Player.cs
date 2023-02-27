@@ -1,6 +1,7 @@
 using RiptideNetworking;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : MonoBehaviour
 {
@@ -118,7 +119,21 @@ public class Player : MonoBehaviour
         }
     }
 
-
+    private static void UpdatePlayerMaps(int block, byte xPos, byte yPos, ushort originPlayer)
+    {
+        
+        foreach (Player players in list.Values)
+        {
+            if (players.Id != originPlayer)
+            {
+                RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.updateServerMap);
+                message.AddByte(xPos);
+                message.AddByte(yPos);
+                message.AddInt(block);
+                NetworkManager.Instance.Server.Send(message, players.Id);
+            }
+        }
+    }
 
     [MessageHandler((ushort)(ClientToServerId.updatePlayerPosition))]
     private static void PlayerPos(ushort fromClientId, Message message)
@@ -140,11 +155,14 @@ public class Player : MonoBehaviour
     [MessageHandler((ushort)ClientToServerId.updateServerMap)]
     private static void UpdateMap(ushort fromClientId, Message message)
     {
-        Vector2 BlockPos = message.GetVector2();
+        //Vector2 BlockPos = message.GetVector2();
+        byte xPos = message.GetByte();
+        byte yPos = message.GetByte();
         int block = message.GetInt();
         //Debug.Log($"Block Update Called at {(int)BlockPos.x}:{(int)BlockPos.y} for {block}");
-        FindObjectOfType<GenerationScriptV2>().ServerUpdatingBlock(block, (int)BlockPos.x, (int)BlockPos.y);
+        FindObjectOfType<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
         message.Release();
+        UpdatePlayerMaps(block, xPos, yPos, fromClientId);
     }
 
 
