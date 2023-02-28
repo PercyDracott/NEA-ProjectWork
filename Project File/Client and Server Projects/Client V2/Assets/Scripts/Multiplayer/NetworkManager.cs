@@ -56,6 +56,7 @@ public class NetworkManager : MonoBehaviour
         Client.ConnectionFailed += FailedToConnect;
         Client.Disconnected += DidDisconnect;
         Client.ClientDisconnected += PlayerLeft;
+        //Client.Disconnect += CalledLeave;
     }
 
     private void FixedUpdate()
@@ -93,6 +94,21 @@ public class NetworkManager : MonoBehaviour
 
     private void DidDisconnect(object sender, EventArgs e)
     {
+        
+        UIManager.Instance.BackToMain();
+        
+
+
+    }
+
+    public void CalledLeave()
+    {
+        Client.Disconnect();
+        Debug.Log("Disconnect Called");
+        foreach (Player players in Player.list.Values)
+        {
+            Destroy(players.gameObject);
+        }
         UIManager.Instance.BackToMain();
     }
 

@@ -70,7 +70,8 @@ public class PlayerMenuManager : MonoBehaviour
         PauseMenu.SetActive(false);
         hasPauseMenuOpen = false;
         hasAnyMenuOpen = false;
-        Save();
+        //Save();
+        FindObjectOfType<NetworkManager>().CalledLeave();
         Sound();
     }
 
