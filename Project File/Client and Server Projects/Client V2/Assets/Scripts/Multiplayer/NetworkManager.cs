@@ -2,6 +2,8 @@ using RiptideNetworking;
 using RiptideNetworking.Utils;
 using UnityEngine;
 using System;
+using TMPro;
+using UnityEditor.Experimental.GraphView;
 
 public enum ServerToClientId : ushort
 {
@@ -39,6 +41,7 @@ public class NetworkManager : MonoBehaviour
     }
 
     public Client Client { get; private set; }
+    public TextChatManger DebugText;
     //[SerializeField] private string ip;
     //[SerializeField] private ushort port;
     
@@ -72,9 +75,11 @@ public class NetworkManager : MonoBehaviour
 
     public void Connect(string ip, ushort port)
     {
-        
+        //DebugText.AddToChat($"Attemping Connection on {ip}:{port}, at {Time.realtimeSinceStartup}");
         Client.Connect($"{ip}:{port}");
     }
+
+
 
     private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
     {
@@ -84,17 +89,19 @@ public class NetworkManager : MonoBehaviour
     private void DidConnect(object sender, EventArgs e)
     {
         UIManager.Instance.SendName();
-
+        DebugText.AddToChat($"Connected at {Time.realtimeSinceStartup}");
     }
 
     private void FailedToConnect(object sender, EventArgs e)
     {
+        DebugText.AddToChat($"Failed To Connect at {Time.realtimeSinceStartup}");
         UIManager.Instance.BackToMain();
     }
 
     private void DidDisconnect(object sender, EventArgs e)
     {
-        
+
+        DebugText.AddToChat($"Disconnected at {Time.realtimeSinceStartup}");
         UIManager.Instance.BackToMain();
         
 
@@ -104,6 +111,7 @@ public class NetworkManager : MonoBehaviour
     public void CalledLeave()
     {
         Client.Disconnect();
+        DebugText.AddToChat($"Player Called Left at {Time.realtimeSinceStartup}");
         Debug.Log("Disconnect Called");
         foreach (Player players in Player.list.Values)
         {

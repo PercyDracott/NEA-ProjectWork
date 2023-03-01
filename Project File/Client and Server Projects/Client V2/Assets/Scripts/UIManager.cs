@@ -5,6 +5,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -30,6 +32,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_InputField ipField;
     [SerializeField] private TMP_InputField portField;
 
+
     private void Awake()
     {
         instance = this;
@@ -37,9 +40,14 @@ public class UIManager : MonoBehaviour
 
     public void ConnectClicked()
     {
-        usernameField.interactable = false;
-        connectUI.SetActive(false);
-        NetworkManager.Instance.Connect(ipField.text, System.Convert.ToUInt16(portField.text));
+        if (portField.text.Length == 4 && !String.IsNullOrEmpty(ipField.text))
+        {
+            usernameField.interactable = false;
+            connectUI.SetActive(false);
+            NetworkManager.Instance.DebugText.AddToChat($"Attemping Connection on {ipField.text}:{System.Convert.ToUInt16(portField.text)}, at {Time.realtimeSinceStartup}");
+            NetworkManager.Instance.Connect(ipField.text, System.Convert.ToUInt16(portField.text));
+        }
+        
     }
 
     public void BackToMain()

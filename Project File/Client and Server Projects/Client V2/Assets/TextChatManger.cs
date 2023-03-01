@@ -4,6 +4,7 @@ using TMPro;
 
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static UnityEditor.Progress;
 
 public class TextChatManger : MonoBehaviour
 {
@@ -23,10 +24,13 @@ public class TextChatManger : MonoBehaviour
     void UpdateChat()
     {
         chat.text = "";
+        int count = 1;
         foreach (var item in messages)
         {
-            chat.text += "\n" + item;
+            chat.text += "\n" + count.ToString() + " : " + item;
+            count++;
         }
+        
     }
 
     public void AddToChat(string Message)

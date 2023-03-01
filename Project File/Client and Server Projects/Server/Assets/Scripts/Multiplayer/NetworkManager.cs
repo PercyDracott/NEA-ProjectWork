@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum ServerToClientId : ushort
 {
@@ -45,6 +46,7 @@ public class NetworkManager : MonoBehaviour
 
     //[SerializeField] private TMP_InputField ipField;
     [SerializeField] private TMP_InputField portField;
+    [SerializeField] private Button CurrentServerState;
     
 
 
@@ -67,6 +69,8 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
         Server.Tick();
+        if (Server.IsRunning) CurrentServerState.GetComponent<Image>().color = Color.green;
+        else CurrentServerState.GetComponent<Image>().color = Color.red;
     }
 
     private void OnApplicationQuit()
@@ -86,6 +90,7 @@ public class NetworkManager : MonoBehaviour
             port = Convert.ToUInt16(portField.text);
             //port = Convert.ToUInt16(ipField.text);
             Server.Start(port, maxClientCount);
+            
         }
         
 
@@ -95,6 +100,7 @@ public class NetworkManager : MonoBehaviour
     public void StopFromButton()
     {
         Server.Stop();
+        
     }
     
     //[MessageHandler((ushort)ClientToServerId.updatePlayerPosition)]
