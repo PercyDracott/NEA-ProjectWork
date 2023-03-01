@@ -24,7 +24,7 @@ public class DayNightCycle : MonoBehaviour
     // Days will be 5 mins, Nights wll be 5 mins
     void FixedUpdate()
     {
-        MovingTheLight();
+        if (FindObjectOfType<NetworkManager>().Server.IsRunning) MovingTheLight();
     }
 
     void MovingTheLight()
@@ -60,5 +60,7 @@ public class DayNightCycle : MonoBehaviour
         else return true;
         
     }
+
+    public Vector3 ReturnLightPosition() { return transform.position; }
 
 }

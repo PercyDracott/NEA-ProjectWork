@@ -3,7 +3,7 @@ using RiptideNetworking.Utils;
 using UnityEngine;
 using System;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
+//using UnityEditor.Experimental.GraphView;
 
 public enum ServerToClientId : ushort
 {
@@ -11,6 +11,7 @@ public enum ServerToClientId : ushort
     map,
     syncNonLocalPosition,
     syncMapUpdate,
+    lightPosition,
 }
 
 public enum ClientToServerId : ushort
@@ -48,6 +49,7 @@ public class NetworkManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        Application.runInBackground = true;
     }
 
     private void Start()

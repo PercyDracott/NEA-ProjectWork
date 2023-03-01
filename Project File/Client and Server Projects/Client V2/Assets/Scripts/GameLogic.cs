@@ -1,3 +1,4 @@
+using RiptideNetworking;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class GameLogic : MonoBehaviour
 {
     private static GameLogic instance;
+    private static GameObject worldLight;
 
     public static GameLogic Instance
     {
@@ -22,6 +24,7 @@ public class GameLogic : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        worldLight = FindObjectOfType<DayNightCycle>().gameObject;
     }
 
     public GameObject LocalPlayerPrefab => localPlayerPrefab;
@@ -30,4 +33,13 @@ public class GameLogic : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject localPlayerPrefab;
     [SerializeField] private GameObject playerPrefab;
+
+    
+
+    [MessageHandler((ushort)ServerToClientId.lightPosition)]
+    private static void ClientLightPosition(Message message)
+    {
+        worldLight.transform.position = (message.GetVector3());
+        Debug.Log("light pos received");
+    }
 }

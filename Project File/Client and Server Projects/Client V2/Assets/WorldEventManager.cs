@@ -23,7 +23,7 @@ public class WorldEventManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        GetComponentInChildren<DayNightCycle>().DayNightEnabled = EnableDayNightCycle;
+        //GetComponentInChildren<DayNightCycle>().DayNightEnabled = EnableDayNightCycle;
     }
 
     public void PlayerDeath(GameObject Player)

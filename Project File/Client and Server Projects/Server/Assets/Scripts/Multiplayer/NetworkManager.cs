@@ -12,6 +12,7 @@ public enum ServerToClientId : ushort
     map,
     syncNonLocalPosition,
     syncMapUpdate,
+    lightPosition,
 }
 
 public enum ClientToServerId : ushort
@@ -53,6 +54,7 @@ public class NetworkManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        Application.runInBackground = true;
     }
 
     private void Start()
@@ -69,7 +71,7 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
         Server.Tick();
-        if (Server.IsRunning) CurrentServerState.GetComponent<Image>().color = Color.green;
+        if (Server.IsRunning) CurrentServerState.GetComponent<Image>().color = Color.green; 
         else CurrentServerState.GetComponent<Image>().color = Color.red;
     }
 
