@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     public ushort Id { get; private set; }
     public string userName { get; private set; }
 
+
+
     public void OnDestroy()
     {
         list.Remove(Id);
@@ -112,7 +114,7 @@ public class Player : MonoBehaviour
     {
         foreach (Player players in list.Values)
         {
-            Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.syncNonLocalPosition);
+            Message message = Message.Create(MessageSendMode.unreliable, (ushort)ServerToClientId.syncNonLocalPosition);
             message.AddUShort(players.Id);
             message.AddVector3(players.gameObject.transform.position);
             NetworkManager.Instance.Server.SendToAll(message);
@@ -141,7 +143,7 @@ public class Player : MonoBehaviour
         Vector3 positionFromMessage = message.GetVector3();
         //ushort playerIdFromMessage = message.GetUShort();
         //Debug.Log($"CALLED POSITION UPDATE, {positionFromMessage.x}:{positionFromMessage.y}");
-        Player.list[fromClientId].transform.position = positionFromMessage;
+        list[fromClientId].gameObject.transform.position = positionFromMessage;
         message.Release();
 
     }
@@ -160,7 +162,7 @@ public class Player : MonoBehaviour
         byte yPos = message.GetByte();
         int block = message.GetInt();
         //Debug.Log($"Block Update Called at {(int)BlockPos.x}:{(int)BlockPos.y} for {block}");
-        FindObjectOfType<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
+        FindObjectOfType<WorldEventManager>().GetComponentInChildren<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
         message.Release();
         UpdatePlayerMaps(block, xPos, yPos, fromClientId);
     }

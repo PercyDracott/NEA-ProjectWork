@@ -49,6 +49,7 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private TMP_InputField portField;
     [SerializeField] private Button CurrentServerState;
     
+    
 
 
     private void Awake()

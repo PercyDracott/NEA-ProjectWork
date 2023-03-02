@@ -105,7 +105,11 @@ public class NetworkManager : MonoBehaviour
 
         DebugText.AddToChat($"Disconnected at {Time.realtimeSinceStartup}");
         UIManager.Instance.BackToMain();
-        
+        foreach (Player players in Player.list.Values)
+        {
+            Destroy(players.gameObject);
+        }
+        UIManager.Instance.BackToMain();
 
 
     }

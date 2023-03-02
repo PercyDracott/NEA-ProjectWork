@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     public bool IsLocal { get; private set; }
     public string userName { get; private set; }
 
+    [SerializeField] private GenerationScriptV2 Generation;
+
     private void OnDestroy()
     {
         list.Remove(Id);
@@ -25,11 +27,14 @@ public class Player : MonoBehaviour
 
     private void PassingPlayerPositionToServer()
     {
-        //Debug.Log("positon Update called");
-        RiptideNetworking.Message message = Message.Create(MessageSendMode.unreliable, (ushort)ClientToServerId.updatePlayerPosition);
-        message.AddVector3(transform.position);
-        //message.AddUShort(Id);
-        NetworkManager.Instance.Client.Send(message);
+        if (Id == NetworkManager.Instance.Client.Id)
+        {
+            //Debug.Log("positon Update called");
+            RiptideNetworking.Message message = Message.Create(MessageSendMode.unreliable, (ushort)ClientToServerId.updatePlayerPosition);
+            message.AddVector3(list[NetworkManager.Instance.Client.Id].gameObject.transform.position);
+            //message.AddUShort(Id);
+            NetworkManager.Instance.Client.Send(message);
+        }
     }
 
     public static void Spawn(ushort id, string username, Vector3 position)
@@ -126,7 +131,7 @@ public class Player : MonoBehaviour
         byte yPos = message.GetByte();
         int block = message.GetInt();
         //Debug.Log($"Block Update Called at {(int)BlockPos.x}:{(int)BlockPos.y} for {block}");
-        FindObjectOfType<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
+        FindObjectOfType<WorldEventManager>().GetComponentInChildren<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
         message.Release();
         //UpdatePlayerMaps(block, xPos, yPos, fromClientId);
 
