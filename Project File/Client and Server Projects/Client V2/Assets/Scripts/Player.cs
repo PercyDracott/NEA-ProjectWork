@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            player = Instantiate(GameLogic.Instance.LocalPlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
+            player = Instantiate(GameLogic.Instance.PlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
             player.IsLocal = false;
         }
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
@@ -71,12 +71,12 @@ public class Player : MonoBehaviour
     //    FindObjectOfType<GenerationScriptV2>().setMap(map);
     //}
 
-    public void SendBlockUpdateToServer(byte x, byte y, int block)
+    public void SendBlockUpdateToServer(int x, int y, byte block)
     {
         RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.updateServerMap);
-        message.AddByte(x);
-        message.AddByte(y);
-        message.AddInt(block);
+        message.AddInt(x);
+        message.AddInt(y);
+        message.AddByte(block);
         NetworkManager.Instance.Client.Send(message);
     }
 
@@ -104,7 +104,7 @@ public class Player : MonoBehaviour
         //short LayerInteger = message.GetShort();
         //Debug.Log(LayerInteger);
         //Debug.LogAssertion(Layer);
-        Debug.Log("Received Call From Server To Build Map");
+        //Debug.Log("Received Call From Server To Build Map");
         
         CallMapBuild(ByteArray, Layer);
         message.Release();
@@ -127,9 +127,9 @@ public class Player : MonoBehaviour
     [MessageHandler((ushort)(ServerToClientId.syncMapUpdate))]
     private static void SyncingMaps(Message message)
     {
-        byte xPos = message.GetByte();
-        byte yPos = message.GetByte();
-        int block = message.GetInt();
+        int xPos = message.GetInt();
+        int yPos = message.GetInt();
+        byte block = message.GetByte();
         //Debug.Log($"Block Update Called at {(int)BlockPos.x}:{(int)BlockPos.y} for {block}");
         FindObjectOfType<WorldEventManager>().GetComponentInChildren<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
         message.Release();

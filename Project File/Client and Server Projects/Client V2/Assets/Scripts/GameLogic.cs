@@ -40,6 +40,6 @@ public class GameLogic : MonoBehaviour
     private static void ClientLightPosition(Message message)
     {
         worldLight.transform.position = (message.GetVector3());
-        Debug.Log("light pos received");
+        //Debug.Log("light pos received");
     }
 }

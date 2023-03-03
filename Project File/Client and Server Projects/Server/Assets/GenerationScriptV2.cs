@@ -173,14 +173,14 @@ public class GenerationScriptV2 : MonoBehaviour
 
         }
         Debug.Log(map[x, y]);
-        TestTileFG.enabled = true;
-        //TestTileFG.
-        //TestTileFG.SetColor(new Vector3Int(x, y, 0), Color.white);
-        TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
-        //TestTileFG.RefreshAllTiles();
+        
+        Debug.Log($"{x}:{y}");
+        
+        //Debug.Log(TestTileFG.GetTile(new Vector3Int(x, y, 0)).name);
+        TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);        
         TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
-        //Renderer(map, TestTileFG, TestTileBG);
-        //Debug.Log("GenerationScript Called");
+        //Debug.Log(TestTileFG.GetTile(new Vector3Int(x, y, 0)).name);
+        
     }
 
     //public void BuildBlock(int block, int x, int y)

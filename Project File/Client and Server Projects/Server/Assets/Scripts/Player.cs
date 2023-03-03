@@ -90,11 +90,11 @@ public class Player : MonoBehaviour
                 tempXS[x] = maptoSend[x, y];
             }
             //
-            Debug.LogAssertion(y);
+            //Debug.LogAssertion(y);
             message.AddShort(y);
             message.AddInt(FindObjectOfType<GenerationScriptV2>().worldWidth);
             message.AddBytes(tempXS, false, true);
-            Debug.Log("sending map to client");
+            //Debug.Log("sending map to client");
             NetworkManager.Instance.Server.Send(message, toClientId);
         }
 
@@ -121,17 +121,17 @@ public class Player : MonoBehaviour
         }
     }
 
-    private static void UpdatePlayerMaps(int block, byte xPos, byte yPos, ushort originPlayer)
+    private static void UpdatePlayerMaps(byte block, int xPos, int yPos, ushort originPlayer)
     {
         
         foreach (Player players in list.Values)
         {
             if (players.Id != originPlayer)
             {
-                RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.updateServerMap);
-                message.AddByte(xPos);
-                message.AddByte(yPos);
-                message.AddInt(block);
+                RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.syncMapUpdate);
+                message.AddInt(xPos);
+                message.AddInt(yPos);
+                message.AddByte(block);
                 NetworkManager.Instance.Server.Send(message, players.Id);
             }
         }
@@ -158,11 +158,11 @@ public class Player : MonoBehaviour
     private static void UpdateMap(ushort fromClientId, Message message)
     {
         //Vector2 BlockPos = message.GetVector2();
-        byte xPos = message.GetByte();
-        byte yPos = message.GetByte();
-        int block = message.GetInt();
+        int xPos = message.GetInt();
+        int yPos = message.GetInt();
+        byte block = message.GetByte();
         //Debug.Log($"Block Update Called at {(int)BlockPos.x}:{(int)BlockPos.y} for {block}");
-        FindObjectOfType<WorldEventManager>().GetComponentInChildren<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
+        FindObjectOfType<GenerationScriptV2>().ServerUpdatingBlock(block, xPos, yPos);
         message.Release();
         UpdatePlayerMaps(block, xPos, yPos, fromClientId);
     }

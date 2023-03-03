@@ -92,7 +92,7 @@ public class GenerationScriptV2 : MonoBehaviour
             }
             else map[x, y] = 0;
             FindObjectOfType<AudioManager>().Play("Block Break");
-            FindObjectOfType<Player>().SendBlockUpdateToServer((byte)x, (byte)y, map[x,y]);
+            FindObjectOfType<Player>().SendBlockUpdateToServer(x, y, map[x,y]);
             return block;
         }
         return 0;
@@ -132,8 +132,8 @@ public class GenerationScriptV2 : MonoBehaviour
         Debug.Log(map[x, y]);
         TestTileFG.enabled = true;
         //TestTileFG.
-        TestTileFG.SetTile(new Vector3Int((byte)x, (byte)y, 0), placing);
-        TestTileFG.RefreshTile(new Vector3Int((byte)x, (byte)y, 0));
+        TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
+        TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
         //Renderer(map, TestTileFG, TestTileBG);
         //Debug.Log("GenerationScript Called");
     }
@@ -180,7 +180,7 @@ public class GenerationScriptV2 : MonoBehaviour
             TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
             TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
             FindObjectOfType<AudioManager>().Play("Block Place");
-            FindObjectOfType<Player>().SendBlockUpdateToServer((byte)x, (byte)y, map[x, y]);
+            FindObjectOfType<Player>().SendBlockUpdateToServer(x, y, map[x, y]);
             return true;
         }
         return false;
