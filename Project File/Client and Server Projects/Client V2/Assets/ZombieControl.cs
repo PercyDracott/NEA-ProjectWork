@@ -40,6 +40,78 @@ public class ZombieControl : MonoBehaviour
     public bool OnGround { get { return Physics2D.OverlapCircle(new Vector2(transform.position.x, transform.position.y - 1.1f), 0.1f, groundLayer); } }
     public bool playerInAttackRange { get { return Physics2D.OverlapCapsule(attackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, playerLayer); } }
 
+
+    private void Start()
+    {
+        zombieRB = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        Physics.IgnoreLayerCollision(gameObject.layer, gameObject.layer);
+    }
+
+    void ZombieWalkAnimations()
+    {
+        if (zombieRB.velocity.x != 0)
+        {
+            animator.Play("ZombieWalk");
+        }
+        else animator.Play("ZombieIdle");
+    }
+
+    void FaceTowardsWalkingDirection()
+    {
+        if (zombieRB.velocity.x > 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        if (zombieRB.velocity.x < 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        OnTheGround = OnGround;
+        Debug.DrawRay(new Vector2(transform.position.x, transform.position.y - 0.5f), new Vector2(transform.localScale.x, 0), Color.red);
+        Debug.DrawRay(new Vector2(transform.position.x, transform.position.y + 0.5f), new Vector2(transform.localScale.x, 0), Color.red);
+        ZombieWalkAnimations();
+        FaceTowardsWalkingDirection();
+        if (playerInRange)
+        {
+            FaceTowardsPlayer(playerInRangePosition());
+            if (playerInAttackRange) AttackManager();
+            //if (!playerInAttackRange) zombieRB.velocity = new Vector2(walkSpeed * transform.localScale.x, zombieRB.velocity.y);
+        }
+
+    }
+
+    void FaceTowardsPlayer(Vector2 playerPos)
+    {
+        if (transform.position.x < playerPos.x) transform.localScale = new Vector3(1, 1, 1);
+        if (transform.position.x > playerPos.x) transform.localScale = new Vector3(-1, 1, 1);
+        Debug.DrawLine(transform.position, playerPos,Color.red);
+    }
+
+    public Vector2 playerInRangePosition()
+    {
+        Vector2 closePlayer = new Vector2(0, 0);
+        float previousDistance = sightRange;
+        if (playerInRange)
+        {
+            Collider2D[] players = (Physics2D.OverlapCircleAll(transform.position, sightRange, playerLayer));
+            float currentDistance;
+            foreach (var item in players)
+            {
+                currentDistance = (Mathf.Sqrt((float)(System.Math.Pow((item.transform.position.x - transform.position.x), 2) + System.Math.Pow((item.transform.position.y - transform.position.y), 2))));
+                if (currentDistance < previousDistance)
+                {
+                    closePlayer = item.transform.position;
+                    previousDistance = currentDistance;
+                }
+            }
+        }
+        return closePlayer;
+    }
     //    // Start is called before the first frame update
     //    void Start()
     //    {
@@ -88,28 +160,28 @@ public class ZombieControl : MonoBehaviour
     //        }
     //    }
 
-    //    void Attack()
-    //    {
-    //        Collider2D[] hitPlayers = (Physics2D.OverlapCapsuleAll(attackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, playerLayer));
-    //        //Debug.Log(hitEnemies.Length);
-    //        foreach (Collider2D hits in hitPlayers)
-    //        {
-    //            hits.GetComponent<HealthManager>().TakeDamage((int)attackDamage);
+    void Attack()
+    {
+        Collider2D[] hitPlayers = (Physics2D.OverlapCapsuleAll(attackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, playerLayer));
+        //Debug.Log(hitEnemies.Length);
+        foreach (Collider2D hits in hitPlayers)
+        {
+            hits.GetComponent<HealthManager>().TakeDamage((int)attackDamage);
 
-    //        }
+        }
 
 
-    //    }
+    }
 
-    //    void AttackManager()
-    //    {
-    //        timeSinceAttack += Time.deltaTime;
-    //        if (timeSinceAttack > attackRate)
-    //        {
-    //            timeSinceAttack = 0;
-    //            Attack();
-    //        }
-    //    }
+    void AttackManager()
+    {
+        timeSinceAttack += Time.deltaTime;
+        if (timeSinceAttack > attackRate)
+        {
+            timeSinceAttack = 0;
+            Attack();
+        }
+    }
 
     //    void FaceTowardsPlayer(Vector2 playerPos)
     //    {
@@ -208,28 +280,18 @@ public class ZombieControl : MonoBehaviour
     //        else animator.Play("ZombieIdle");
     //    }
 
-    public void TakeDamage(int damage, bool isFromPlayer)
+    public void TakeDamage()
     {
-        if (isFromPlayer)
-        {
-            FindObjectOfType<AudioManager>().Play("Mob Damage");
-
-        }
-        if (ZombieHealth - damage > 0)
-        {
-            ZombieHealth -= damage;
-
-        }
-        else Destroy(gameObject);
+        GetComponent<Zombie>().DespawnFromClient();
 
     }
 
-    public void ApplyKnockback(Vector2 attackPos)
-    {
-        hasBeenKnockedBack = true;
-        timeSinceKB = 0;
-        Vector2 direction = ((Vector2)transform.position - attackPos).normalized;
-        zombieRB.AddForce(direction * knockbackStrength, ForceMode2D.Impulse);
-        Debug.Log(hasBeenKnockedBack);
-    }
+    //public void ApplyKnockback(Vector2 attackPos)
+    //{
+    //    hasBeenKnockedBack = true;
+    //    timeSinceKB = 0;
+    //    Vector2 direction = ((Vector2)transform.position - attackPos).normalized;
+    //    zombieRB.AddForce(direction * knockbackStrength, ForceMode2D.Impulse);
+    //    Debug.Log(hasBeenKnockedBack);
+    //}
 }

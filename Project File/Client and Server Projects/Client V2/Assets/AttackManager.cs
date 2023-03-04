@@ -55,8 +55,8 @@ public class AttackManager : MonoBehaviour
         //Debug.Log(hitEnemies.Length);
         foreach(Collider2D hits in hitEnemies)
         {
-            hits.GetComponent<ZombieControl>().TakeDamage(AttackDamage,true);
-            hits.GetComponent<ZombieControl>().ApplyKnockback(transform.position);
+            hits.GetComponent<ZombieControl>().TakeDamage();
+            //hits.GetComponent<ZombieControl>().ApplyKnockback(transform.position);
         }
                   
         

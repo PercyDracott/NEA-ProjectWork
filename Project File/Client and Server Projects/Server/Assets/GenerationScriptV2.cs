@@ -147,6 +147,9 @@ public class GenerationScriptV2 : MonoBehaviour
         TileBase placing = Plank;
         switch (block)
         {
+            case 0:
+                placing = null;
+                break;
             case 1:
                 placing = GrassSoil;
                 break;
@@ -172,15 +175,22 @@ public class GenerationScriptV2 : MonoBehaviour
                 break;
 
         }
-        Debug.Log(map[x, y]);
-        
-        Debug.Log($"{x}:{y}");
-        
+        Debug.Log($"At Position {x}:{y}, Map is now {map[x,y]}");
+        if (block == 8 || block == 9)
+        {
+            TestTileBG.SetTile(new Vector3Int(x, y, 0), placing);
+            TestTileFG.SetTile(new Vector3Int(x, y, 0), null);
+            TestTileBG.RefreshTile(new Vector3Int(x, y, 0));
+            TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
+        }
+        else
+        {
+            TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);
+            TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
+            TestTileBG.RefreshTile(new Vector3Int(x, y, 0));
+        }
         //Debug.Log(TestTileFG.GetTile(new Vector3Int(x, y, 0)).name);
-        TestTileFG.SetTile(new Vector3Int(x, y, 0), placing);        
-        TestTileFG.RefreshTile(new Vector3Int(x, y, 0));
-        //Debug.Log(TestTileFG.GetTile(new Vector3Int(x, y, 0)).name);
-        
+
     }
 
     //public void BuildBlock(int block, int x, int y)

@@ -4,6 +4,7 @@ using RiptideNetworking.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
@@ -44,11 +45,13 @@ public class Player : MonoBehaviour
         {
             player = Instantiate(GameLogic.Instance.LocalPlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
             player.IsLocal = true;
+            player.gameObject.GetComponent<usernameText>().ApplyUserName(username);
         }
         else
         {
             player = Instantiate(GameLogic.Instance.PlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
             player.IsLocal = false;
+            player.gameObject.GetComponent<usernameText>().ApplyUserName(username);
         }
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;

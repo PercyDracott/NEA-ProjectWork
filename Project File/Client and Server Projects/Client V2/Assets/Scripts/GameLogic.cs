@@ -29,6 +29,8 @@ public class GameLogic : MonoBehaviour
 
     public GameObject LocalPlayerPrefab => localPlayerPrefab;
     public GameObject PlayerPrefab => playerPrefab;
+    //public GameObject ZombiePrefab => zombiePrefab;
+
 
     [Header("Prefabs")]
     [SerializeField] private GameObject localPlayerPrefab;
@@ -42,4 +44,10 @@ public class GameLogic : MonoBehaviour
         worldLight.transform.position = (message.GetVector3());
         //Debug.Log("light pos received");
     }
+
+    public GameObject ZombiePrefab => zombiePrefab;
+
+    
+    [SerializeField] private GameObject zombiePrefab;
+    
 }

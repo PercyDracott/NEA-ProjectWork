@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -22,6 +23,8 @@ public class ZombieControl : MonoBehaviour
 
     int ZombieHealth = 10;
     public bool OnTheGround;
+    public bool InSight;
+    public bool InRange;
 
     Rigidbody2D zombieRB;
     Animator animator;
@@ -66,56 +69,58 @@ public class ZombieControl : MonoBehaviour
     private void FixedUpdate()
     {
         OnTheGround = OnGround;
+        InSight = playerInRange;
+        InRange = playerInAttackRange;
         //Debug.DrawLine(new Vector2(transform.position.x, transform.position.y - 1.1f), new Vector2(transform.position.x, transform.position.y - 1.2f));
         Debug.DrawRay(new Vector2(transform.position.x, transform.position.y - 0.5f), new Vector2(transform.localScale.x,0), Color.red);
         Debug.DrawRay(new Vector2(transform.position.x, transform.position.y + 0.5f), new Vector2(transform.localScale.x, 0), Color.red);
-
+        
         ZombieWalkAnimations();
         TakeDamageDuringDay();
         JumpUpByOneBlock();
         if (playerInRange)
         {
             FaceTowardsPlayer(playerInRangePosition());
-            if (playerInAttackRange) AttackManager();
-            if (!hasBeenKnockedBack && !playerInAttackRange) zombieRB.velocity = new Vector2(walkSpeed * transform.localScale.x,zombieRB.velocity.y);
+            //if (playerInAttackRange) AttackManager();
+            if (!playerInAttackRange) zombieRB.velocity = new Vector2(walkSpeed * transform.localScale.x,zombieRB.velocity.y);
         }
         else IdlePatrol();
 
-        if (hasBeenKnockedBack)
-        {
-            timeSinceKB += Time.deltaTime;
-            if (timeSinceKB >= knockbackDuration) hasBeenKnockedBack = false;
-        }
+        //if (hasBeenKnockedBack)
+        //{
+        //    timeSinceKB += Time.deltaTime;
+        //    if (timeSinceKB >= knockbackDuration) hasBeenKnockedBack = false;
+        //}
     }
 
-    void Attack()
-    {
-        Collider2D[] hitPlayers = (Physics2D.OverlapCapsuleAll(attackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, playerLayer));
-        //Debug.Log(hitEnemies.Length);
-        foreach (Collider2D hits in hitPlayers)
-        {
-            hits.GetComponent<HealthManager>().TakeDamage((int)attackDamage);
+    //void Attack()
+    //{
+    //    Collider2D[] hitPlayers = (Physics2D.OverlapCapsuleAll(attackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, playerLayer));
+    //    //Debug.Log(hitEnemies.Length);
+    //    foreach (Collider2D hits in hitPlayers)
+    //    {
+    //        hits.GetComponent<HealthManager>().TakeDamage((int)attackDamage);
             
-        }
+    //    }
 
 
-    }
+    //}
 
-    void AttackManager()
-    {
-        timeSinceAttack += Time.deltaTime;
-        if (timeSinceAttack > attackRate)
-        {
-            timeSinceAttack = 0;
-            Attack();
-        }
-    }
+    //void AttackManager()
+    //{
+    //    timeSinceAttack += Time.deltaTime;
+    //    if (timeSinceAttack > attackRate)
+    //    {
+    //        timeSinceAttack = 0;
+    //        Attack();
+    //    }
+    //}
 
     void FaceTowardsPlayer(Vector2 playerPos)
     {
         if (transform.position.x < playerPos.x) transform.localScale = new Vector3(1, 1, 1);
         if (transform.position.x > playerPos.x) transform.localScale = new Vector3(-1, 1, 1);
-        Debug.DrawLine(transform.position, playerPos);
+        Debug.DrawLine(transform.position, playerPos, Color.red);
     }
 
     public Vector2 playerInRangePosition()
@@ -195,7 +200,7 @@ public class ZombieControl : MonoBehaviour
     {
         if (DayNightCycleInUse.isDay())
         {
-            TakeDamage(1,false);
+            GetComponent<Zombie>().Despawn();
         }
     }
 
@@ -224,12 +229,12 @@ public class ZombieControl : MonoBehaviour
         
     }
 
-    public void ApplyKnockback(Vector2 attackPos)
-    {
-        hasBeenKnockedBack = true;
-        timeSinceKB = 0;
-        Vector2 direction = ((Vector2)transform.position - attackPos).normalized;
-        zombieRB.AddForce(direction * knockbackStrength, ForceMode2D.Impulse);
-        Debug.Log(hasBeenKnockedBack);
-    }
+    //public void ApplyKnockback(Vector2 attackPos)
+    //{
+    //    hasBeenKnockedBack = true;
+    //    timeSinceKB = 0;
+    //    Vector2 direction = ((Vector2)transform.position - attackPos).normalized;
+    //    zombieRB.AddForce(direction * knockbackStrength, ForceMode2D.Impulse);
+    //    Debug.Log(hasBeenKnockedBack);
+    //}
 }

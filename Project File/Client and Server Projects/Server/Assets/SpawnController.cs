@@ -32,13 +32,15 @@ public class SpawnController : MonoBehaviour
         Day = DayNightCycleInUse.isDay();
         if (!DayNightCycleInUse.isDay() && GenerationScriptInUse.terrainGenerationComplete && !hasSpawnedMobs)
         {
+            ushort ZombieID = 0;
             foreach (var positionElement in FindSpawnLocations())
             {
-                Instantiate(MobPrefab, positionElement, Quaternion.identity);
-                
+                FindObjectOfType<GameLogic>().CallZombieSpawn(positionElement, ZombieID);
+                ZombieID++;
             }
             hasSpawnedMobs = true;
         }
+        //if (DayNightCycleInUse.isDay() && hasSpawnedMobs) FindObjectOfType<Zombie>().DespawnAll();
         if (DayNightCycleInUse.isDay()) hasSpawnedMobs = false;
     }
        

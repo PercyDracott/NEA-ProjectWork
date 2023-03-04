@@ -27,6 +27,7 @@ public class GameLogic : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject zombiePrefab;
 
     private void Awake()
     {
@@ -46,8 +47,24 @@ public class GameLogic : MonoBehaviour
             //Debug.Log("light Pos sent");
             timeSinceActive = 0f;
         }
+
+
     }
 
-    
+    //Zombie Management  
+
+    public void CallZombieSpawn(Vector3 position, ushort Id)
+    {
+        Zombie zombie = Instantiate(zombiePrefab, position, Quaternion.identity).GetComponent<Zombie>();
+        zombie.SendId(Id);
+
+        Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.zombieSpawning);
+        message.AddVector3(position);
+        message.AddUShort(Id);
+        NetworkManager.Instance.Server.SendToAll(message);
+        
+    }
+
+
 
 }

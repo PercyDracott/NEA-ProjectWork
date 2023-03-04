@@ -13,6 +13,9 @@ public enum ServerToClientId : ushort
     syncNonLocalPosition,
     syncMapUpdate,
     lightPosition,
+    zombieSpawning,
+    zombiePosition,
+    zombieDeath,
 }
 
 public enum ClientToServerId : ushort
@@ -20,7 +23,7 @@ public enum ClientToServerId : ushort
     name = 1,
     updatePlayerPosition,
     updateServerMap,
-
+    zombieDeath,
 }
 
 public class NetworkManager : MonoBehaviour

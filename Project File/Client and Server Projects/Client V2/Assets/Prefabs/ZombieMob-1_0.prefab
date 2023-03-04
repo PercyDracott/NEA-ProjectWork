@@ -154,8 +154,9 @@ GameObject:
   - component: {fileID: 8825112637634763870}
   - component: {fileID: 4146802934412955870}
   - component: {fileID: 205138447012821256}
+  - component: {fileID: -8526737348503126557}
   - component: {fileID: 7696540542107938763}
-  - component: {fileID: 3842206524302622246}
+  - component: {fileID: 7173908454807443224}
   m_Layer: 8
   m_Name: ZombieMob-1_0
   m_TagString: Untagged
@@ -267,12 +268,24 @@ Rigidbody2D:
   m_Mass: 1.4911726
   m_LinearDrag: 0
   m_AngularDrag: 0
-  m_GravityScale: 2
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &-8526737348503126557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5638747855069318109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 991d947a75496a34a83596f7a6d80b3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!70 &7696540542107938763
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -289,7 +302,7 @@ CapsuleCollider2D:
   m_Offset: {x: -0.1875, y: -0.175}
   m_Size: {x: 0.9, y: 1.85}
   m_Direction: 0
---- !u!114 &3842206524302622246
+--- !u!114 &7173908454807443224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -311,8 +324,8 @@ MonoBehaviour:
   attackPoint: {fileID: 174651685908020194}
   attackDamage: 3
   attackRate: 4
-  knockbackStrength: 2
-  knockbackDuration: 1
-  walkSpeed: 2
-  jumpHeight: 4
+  knockbackStrength: 0
+  knockbackDuration: 0
+  walkSpeed: 0
+  jumpHeight: 6
   OnTheGround: 0
