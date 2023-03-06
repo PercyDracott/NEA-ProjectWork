@@ -1,6 +1,7 @@
 using RiptideNetworking;
 using System.Collections.Generic;
 using UnityEngine;
+//using static UnityEditor.Progress;
 //using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : MonoBehaviour
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
         player.userName = string.IsNullOrEmpty(username) ? "Guest" : username;
 
         player.SendMap(player.Id);
+        player.SendMobs(player.Id);
         player.SendSpawn();
         list.Add(id, player);
     }
@@ -56,6 +58,17 @@ public class Player : MonoBehaviour
         RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.playerSpawned);
 
         NetworkManager.Instance.Server.Send(AddSpawnData(message), toClientId);
+    }
+
+    private void SendMobs(ushort toClientId)
+    {
+        foreach (var item in Zombie.list.Values)
+        {
+            Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.zombieSpawning);
+            message.AddVector3(item.gameObject.transform.position);
+            message.AddUShort(item.Id);
+            NetworkManager.Instance.Server.Send(message, toClientId);
+        }
     }
 
     private void SendMap(ushort toClientId)
@@ -167,7 +180,25 @@ public class Player : MonoBehaviour
         UpdatePlayerMaps(block, xPos, yPos, fromClientId);
     }
 
+    [MessageHandler((ushort)ClientToServerId.updateTextChat)]
+    private static void SendUpdatesToPlayers(ushort fromClientId, Message message)
+    {
+        string text = message.GetString();
 
+        foreach (var item in list.Values)
+        {
+            if (item.Id != fromClientId)
+            {
+                Message message2 = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.textChat);
+                message2.AddUShort(item.Id);
+                message2.AddString(text);
+                
+                NetworkManager.Instance.Server.Send(message2, item.Id);
+            }
+        }
+    }
+
+  
 
 
 }

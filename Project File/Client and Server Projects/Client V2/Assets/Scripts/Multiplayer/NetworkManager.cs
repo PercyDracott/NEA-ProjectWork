@@ -15,6 +15,7 @@ public enum ServerToClientId : ushort
     zombieSpawning,
     zombiePosition,
     zombieDeath,
+    textChat,
 }
 
 public enum ClientToServerId : ushort
@@ -23,7 +24,7 @@ public enum ClientToServerId : ushort
     updatePlayerPosition,
     updateServerMap,
     zombieDeath,
-    
+    updateTextChat,
 }
 
 

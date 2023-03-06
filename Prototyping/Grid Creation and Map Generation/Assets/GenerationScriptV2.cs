@@ -8,66 +8,26 @@ using UnityEngine.UI;
 
 public class CustomPerlinNoise
 {
-    //int octaves = 6;
-    //float persistence = 0.5f;
-    //float lacunarity = 2f;
-    float[] noiseArray;
+    float Factor1;
 
-    public CustomPerlinNoise(float lacunarity, float persistence, int octaves, int length)
+    int Sample;
+    int overallLength;
+
+    public CustomPerlinNoise(float seed1, int sampleSize, int length)
     {
-        noiseArray = GeneratePerlinNoise(length, octaves, persistence, lacunarity);
+        Factor1 = seed1;
+
+        Sample = sampleSize;
+        overallLength = length;
+
     }
 
-    static float[] GeneratePerlinNoise(int length, int octaves, float persistence, float lacunarity)
+    public float Get(int x)
     {
-        float[] perlinNoise = new float[length];
-        float amplitude = 1f;
-        float frequency = 1f;
-
-        for (int i = 0; i < octaves; i++)
-        {
-            for (int x = 0; x < length; x++)
-            {
-                perlinNoise[x] += (float)Noise(x * frequency) * amplitude;
-            }
-
-            frequency *= lacunarity;
-            amplitude *= persistence;
-        }
-
-        // Normalize the noise values to be between 0 and 1
-        for (int x = 0; x < length; x++)
-        {
-            perlinNoise[x] = (perlinNoise[x] + 1f) / 2f;
-        }
-
-        return perlinNoise;
+        float position = ((float)x / overallLength) * Sample;
+        //Console.WriteLine(position);
+        return Math.Abs((float)(0.2f * (-3.2f * Math.Sin(Factor1 * position) - 0.2f * Math.Sin(-1.6f * Math.Pow(Math.E, position)) + 1.9f * Math.Sin(0.4f * Math.PI * position))));
     }
-
-    static double Noise(double x)
-    {
-        int xInt = (int)x & 0xff;
-        double xFract = x - (int)x;
-
-        double n0 = Math.Sin(xInt) * 43758.5453123;
-        double n1 = Math.Sin(xInt + 1) * 43758.5453123;
-
-        return Interpolate(n0, n1, xFract);
-    }
-
-    static double Interpolate(double a, double b, double x)
-    {
-        double ft = x * Math.PI;
-        double f = (1 - Math.Cos(ft)) * 0.5;
-
-        return a * (1 - f) + b * f;
-    }
-
-    public float returnPerlinValue(int xValue)
-    {
-        return noiseArray[xValue];
-    }
-
 
 }
 
@@ -157,8 +117,8 @@ public class GenerationScriptV2 : MonoBehaviour
         //CaveSeed = (float)UnityEngine.Random.Range(0.02f, 0.05f);
         OreSeed = (float)UnityEngine.Random.Range(0.03f, 0.05f);
         
-        SoilPerlinNoise = new CustomPerlinNoise(2f,0.5f,6, worldWidth);
-        StonePerlinNoise = new CustomPerlinNoise(2f, 0.5f, 6, worldWidth);
+        SoilPerlinNoise = new CustomPerlinNoise(-1.3f, 20, worldWidth);
+        StonePerlinNoise = new CustomPerlinNoise(0.4f, 30, worldWidth);
 
         map = new int[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
@@ -341,12 +301,12 @@ public class GenerationScriptV2 : MonoBehaviour
         for (int x = 0; x < width; x++)
         {
             //Making the Soil
-            perlinNoiseSoil = Mathf.RoundToInt(SoilPerlinNoise.returnPerlinValue(x) * height / 5);
+            perlinNoiseSoil = Mathf.RoundToInt(SoilPerlinNoise.Get(x) * height / 5);
             perlinNoiseSoil += height / 3;
             //Debug.Log($"Soil Noise Value is {perlinNoiseSoil}");
             for (int y = 0; y < perlinNoiseSoil; y++)
             {
-                Debug.Log(SoilPerlinNoise.returnPerlinValue(x));
+                Debug.Log(SoilPerlinNoise.Get(x));
                 WorldMap[x, y] = 1;
             }
 

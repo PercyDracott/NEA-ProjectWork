@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -75,6 +76,7 @@ public class GenerationScriptV2 : MonoBehaviour
     public int BreakBlock(int x, int y)
     {
         //Debug.Log($"breakblock called, position {x}, {y}");
+        if (x >= worldWidth || y >= worldHeight) return 0;
         
         
         if (!(map[x, y] == 8 || map[x, y] == 9 || map[x, y] == 0))
@@ -100,6 +102,7 @@ public class GenerationScriptV2 : MonoBehaviour
 
     public void ServerUpdatingBlock(int block, int x, int y)
     {
+        if (x >= worldWidth || y >= worldHeight) return;
         map[x, y] = (byte)block;
         TileBase placing = Plank;
         switch (block)
@@ -153,6 +156,7 @@ public class GenerationScriptV2 : MonoBehaviour
 
     public int ReturnTypeOfBlock(int x, int y)
     {
+        if (x >= worldWidth || y >= worldHeight) return 0;
         if (!(map[x, y] == 8 || map[x, y] == 9 || map[x, y] == 0))
         {
             int block = map[x, y];
@@ -163,6 +167,7 @@ public class GenerationScriptV2 : MonoBehaviour
 
     public bool BuildBlock(int block,int x, int y)
     {
+        if (x >= worldWidth || y >= worldHeight) return false;
         //Debug.Log($"buildblock called, position {x}, {y}");
         if ((map[x-1,y] != 0 || map[x + 1, y] != 0 || map[x, y - 1] != 0 || map[x, y + 1] != 0) && (map[x,y] == 0 || map[x, y] == 8 || map[x, y] == 9))
         {

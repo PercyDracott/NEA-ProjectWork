@@ -12,7 +12,11 @@ public class PlayerTextChat : MonoBehaviour
 
     public void Send()
     {
-        FindObjectOfType<TextChatManger>().AddToChat(GetComponentInParent<BlockInteractions>().PlayerID + " : " + input.text);
+        FindObjectOfType<TextChatManger>().AddToChat(input.text);
         FindObjectOfType<AudioManager>().Play("Hud Interact");
+        //GetComponent<Player>().UpdateTextChat(input.text);
+        GetComponentInParent<Player>().UpdateTextChat(input.text);
     }
+
+    
 }

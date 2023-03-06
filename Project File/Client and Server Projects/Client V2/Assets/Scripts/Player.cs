@@ -74,6 +74,13 @@ public class Player : MonoBehaviour
     //    FindObjectOfType<GenerationScriptV2>().setMap(map);
     //}
 
+    public void UpdateTextChat(string text)
+    {
+        Message message = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.updateTextChat);
+        message.AddString(text);
+        NetworkManager.Instance.Client.Send(message);
+    }
+
     public void SendBlockUpdateToServer(int x, int y, byte block)
     {
         RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.updateServerMap);
@@ -140,6 +147,16 @@ public class Player : MonoBehaviour
 
     }
 
+    [MessageHandler((ushort)ServerToClientId.textChat)]
+    private static void SyncingTextChat(Message message)
+    {
+        if (message.GetUShort() == NetworkManager.Instance.Client.Id)
+        {
+            FindObjectOfType<TextChatManger>().AddToChat(message.GetString());
+        }
+        
+        message.Release();
+    }
 
 
 }

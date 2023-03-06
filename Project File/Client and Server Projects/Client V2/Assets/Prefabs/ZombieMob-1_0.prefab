@@ -322,7 +322,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   attackPoint: {fileID: 174651685908020194}
-  attackDamage: 3
+  attackDamage: 6
   attackRate: 4
   knockbackStrength: 0
   knockbackDuration: 0
