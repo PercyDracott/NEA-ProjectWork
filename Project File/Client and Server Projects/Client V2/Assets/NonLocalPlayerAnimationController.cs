@@ -23,16 +23,13 @@ public class NonLocalPlayerAnimationController : MonoBehaviour
         }
         else animator.Play("PlayerIdle");
 
-        void FaceTowardsWalkingDirection()
+        if (rb.velocity.x > 0)
         {
-            if (rb.velocity.x > 0)
-            {
-                transform.localScale = new Vector3(1, 1, 1);
-            }
-            if (rb.velocity.x < 0)
-            {
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        if (rb.velocity.x < 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
         }
     }
 }
