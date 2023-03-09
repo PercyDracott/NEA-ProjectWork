@@ -39,12 +39,12 @@ public class GenerationScriptV2 : MonoBehaviour
     public int worldHeight;
     [SerializeField] float Seed;
     [SerializeField] float StoneSeed;
-    //[SerializeField] float CaveSeed;
+    [SerializeField] float CaveSeed;
     [SerializeField] float OreSeed;
 
     float Smoothness = 40;
     float OreThreshhold = 0.1f;
-    //float CaveThreshhold = 0.7f;
+    float CaveThreshhold = 0.67f;
     
     
     [SerializeField] TileBase GrassSoil;
@@ -61,13 +61,15 @@ public class GenerationScriptV2 : MonoBehaviour
 
     [SerializeField] public Slider SeedSlider;
     [SerializeField] public Slider StoneSlider;
-    //[SerializeField] public Slider CaveSlider;
+    [SerializeField] public Slider CaveSlider;
 
     [SerializeField] float RandomPercentFill;
     [SerializeField] int iterations;
     [SerializeField] int TreePopulation;
 
     [SerializeField] string Filename;
+
+    [SerializeField] private Toggle CaveSystemToggler;
 
     int[,] map;
     int[,] cavemap;
@@ -98,7 +100,7 @@ public class GenerationScriptV2 : MonoBehaviour
     {
         Seed = SeedSlider.value;
         StoneSeed = StoneSlider.value;
-        //CaveSeed = CaveSlider.value;
+        CaveSeed = CaveSlider.value;
         
         map = new int[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
@@ -114,11 +116,11 @@ public class GenerationScriptV2 : MonoBehaviour
         TestTileFG.ClearAllTiles();
         Seed = (float)UnityEngine.Random.Range(0.0f, 1000.0f);
         StoneSeed = (float)UnityEngine.Random.Range(0.0f, 1000.0f);
-        //CaveSeed = (float)UnityEngine.Random.Range(0.02f, 0.05f);
+        CaveSeed = (float)UnityEngine.Random.Range(0.02f, 0.05f);
         OreSeed = (float)UnityEngine.Random.Range(0.03f, 0.05f);
         
-        SoilPerlinNoise = new CustomPerlinNoise(-1.3f, 20, worldWidth);
-        StonePerlinNoise = new CustomPerlinNoise(0.4f, 30, worldWidth);
+        //SoilPerlinNoise = new CustomPerlinNoise(-1.3f, 20, worldWidth);
+        //StonePerlinNoise = new CustomPerlinNoise(0.4f, 30, worldWidth);
 
         map = new int[worldWidth, worldHeight];
         OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
@@ -301,12 +303,12 @@ public class GenerationScriptV2 : MonoBehaviour
         for (int x = 0; x < width; x++)
         {
             //Making the Soil
-            perlinNoiseSoil = Mathf.RoundToInt(SoilPerlinNoise.Get(x) * height / 5);
+            perlinNoiseSoil = Mathf.RoundToInt(Mathf.PerlinNoise(x / (Smoothness * 2), Seed) * height / 5);
             perlinNoiseSoil += height / 3;
             //Debug.Log($"Soil Noise Value is {perlinNoiseSoil}");
             for (int y = 0; y < perlinNoiseSoil; y++)
             {
-                Debug.Log(SoilPerlinNoise.Get(x));
+                //Debug.Log(SoilPerlinNoise.Get(x));
                 WorldMap[x, y] = 1;
             }
 
@@ -343,45 +345,54 @@ public class GenerationScriptV2 : MonoBehaviour
     /// <param name="height"></param>
     public void ApplyCaves(int[,] map)
     {
-        //Version 1
-        //for (int x = 0; x < width; x++)
-        //{
-        //    for (int y = 0; y < height; y++)
-        //    {
-        //        float CavePL = (Mathf.PerlinNoise((float)x * CaveSeed, (float)y * CaveSeed));
-        //        if (CavePL >= CaveThreshhold)
-        //        {
-        //            map[x, y] = 0;
-        //            TestTileFG.SetTile(new Vector3Int(x, y, 0), null);
-        //        }
-        //    }
-        //}
-
-        //Version 2 With Automata
-        CaveGeneration();
-        Automata(iterations);
-
-        for (int x = 0; x < worldWidth; x++)
+        if (CaveSystemToggler.isOn)
         {
-            for (int y = 0; y < worldHeight; y++)
-            {
-                int topofworld = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * worldHeight / 5);
-                topofworld += worldHeight / 3;
-                if (cavemap[x, y] == 0 && y != 0 && y != topofworld-1 && y != topofworld-2)
-                {
-                    //estTileFG.SetTile(new Vector3Int(x, y, 0), null);
-                    if (map[x,y] == 1)
-                    {
-                        map[x, y] = 8;
-                    }
-                    if (map[x, y] == 2 || map[x, y] == 3)
-                    {
-                        map[x, y] = 9;
-                    }
+            //Version 2 With Automata
+            CaveGeneration();
+            Automata(iterations);
 
+            for (int x = 0; x < worldWidth; x++)
+            {
+                for (int y = 0; y < worldHeight; y++)
+                {
+                    int topofworld = Mathf.RoundToInt(Mathf.PerlinNoise(x / Smoothness, Seed) * worldHeight / 5);
+                    topofworld += worldHeight / 3;
+                    if (cavemap[x, y] == 0 && y != 0 && y != topofworld - 1 && y != topofworld - 2)
+                    {
+                        //estTileFG.SetTile(new Vector3Int(x, y, 0), null);
+                        if (map[x, y] == 1)
+                        {
+                            map[x, y] = 8;
+                        }
+                        if (map[x, y] == 2 || map[x, y] == 3)
+                        {
+                            map[x, y] = 9;
+                        }
+
+                    }
                 }
             }
         }
+        else
+        {
+            //Version 1
+            for (int x = 0; x < worldWidth; x++)
+            {
+                for (int y = 0; y < worldHeight; y++)
+                {
+                    float CavePL = (Mathf.PerlinNoise((float)x * CaveSeed, (float)y * CaveSeed));
+                    if (CavePL >= CaveThreshhold)
+                    {
+                        map[x, y] = 0;
+                        TestTileFG.SetTile(new Vector3Int(x, y, 0), SoilBG);
+                    }
+                }
+            }
+        }
+
+
+
+
     }
 
     public void CaveGeneration()
