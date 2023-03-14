@@ -1,0 +1,236 @@
+# Start Writing Here
+Subroutine Generation(worldWidth, worldHeight)
+    ForgroundTileMap.ClearAllTiles()
+    BackgroundTileMap.ClearAllTiles()
+    Seed = Random.WithinRange(0,1000)
+    StoneSeed = Random.WithinRange(0,1000)
+    CaveSeed = Random.WithinRange(0.02,0.05)
+    OreSeed = Random.WithinRange(0.03,0.05)
+    
+    map = new int[worldWidth,worldHeight]
+    If IsFromSave()
+        LoadMap()
+        SaveMap()
+    else
+        OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone)
+        ApplyCaves(map);
+        AddTrees(TreePopulation, TestTileFG, Log, Leaf)
+    Endif
+    
+    Renderer(map, TestTileFG, TestTileBG)
+    GenerateSaveFile(worldName)
+    SaveMap()
+endSubroutine
+
+Subroutine TerrainGeneration(worldWidth, worldHeight, worldMap, Grass, Stone)
+    perlinNoiseSoil = 0
+    perlinNoiseStone = 0
+    For x = 0, x < worldWidth, x++
+        perlinNoiseSoil = RoundToInt(PerlinNoise(x / (smoothness), Seed) * worldHeight / 5)
+        perlinNoiseSoil += worldHeight / 3
+        For y = 0, y < perlinNoiseSoil, y++
+            worldMap[x,y] = 1
+        Endfor
+        perlinNoiseStone = RoundToInt(PerlinNoise(x / (smoothness), StoneSeed) * worldHeight / 8)
+        perlinNoiseStone += worldHeight / 4
+        For y = 0, y < perlinNoiseStone, y++
+            worldMap[x,y] = 2
+        Endfor
+        For y = 0, y < perlinNoiseSoil, y++ 
+            PerlinNoiseOre = RoundToInt(PerlinNoise(x * OreSeed,y * OreSeed))
+            If  PerlinNoiseOre <= OreThreshhold
+                map[x,y] = 3
+            Endif
+        Endfor
+    Endfor
+endSubroutine
+
+Subroutine ApplyCaves(worldWidth, worldHeight, worldMap)
+    For x = 0, x < worldWidth, x++ 
+        For y = 0, y < worldHeight, y++        
+            PerlinNoiseCave = RoundToInt(PerlinNoise(x * CaveSeed, y * CaveSeed))
+            If PerlinNoiseCave >= CaveThreshhold
+                map[x,y] = 0
+            Endif
+        Endfor
+    Endfor
+endSubroutine
+
+Subroutine ApplyCaves(worldWidth, worldHeight, worldMap)
+    RandomFillGeneration()
+    Automata(iterations)
+    
+    For x = 0, x < worldWidth, x++ 
+        For y = 0, y < worldHeight, y++  
+            int topOfWorld = RoundToInt(PerlinNoise(x / (smoothness), Seed) * worldHeight / 5)
+            perlinNoiseSoil += worldHeight / 3
+            If  cavemap[x, y] == 0 && y != 0 && y != topofworld - 1 && y != topofworld - 2
+                If  map[x,y] == 1
+                    map[x,y] = 8
+                Endif
+                If  map[x,y] == 2 OR map[x,y] == 3
+                    map[x,y] = 9
+                Endif
+            Endif
+        Endfor
+    Endfor
+endSubroutine
+
+Subroutine RandomFillGeneration(worldWidth, worldHeight, caveMap)
+    caveMap = new int[worldHeight, worldWidth]
+    For x = 0, x < worldWidth, x++ 
+        For y = 0, y < worldHeight, y++  
+            caveMap[x,y] = Random.WithinRange(0,100) < RandomFillPercentage ? 1 : 0
+        Endfor
+    Endfor
+endSubroutine
+
+Subroutine Automata(iterations, worldWidth, worldHeight)
+    For i = 0, i < count, i++
+        int[,] tempMap = caveMap.Clone
+        For xs = 0, xs < worldWidth - 1, xs++ 
+            For ys = 0, ys < worldHeight - 1, ys++  
+                int neighbours = 0
+                neighbours = GetNeighbours(tempMap, xs, ys, neighbours)
+                If  neighbours > 4
+                    caveMap[xs,ys] = 1
+                else 
+                    caveMap[xs,ys] = 0
+                Endif
+            Endfor
+        Endfor
+    Endfor
+endSubroutine
+
+Subroutine GetNeighbours(tempMap, xs, ys, neighbours)
+    For x = xs - 1, x <= xs, x++
+        For y = ys - 1, y <= ys, y++
+            If  y <= worldHeight AND x <= worldWidth
+                If  y != ys AND x != xs
+                    If  tempMap[x,y] = 1
+                        neighbours++
+                    Endif
+                Endif
+            Endif
+        Endfor
+    Endfor
+    Return neighbours
+endSubroutine
+
+Subroutine AddTrees(worldWidth, worldHeight, Map, density)
+    //Check for overpopulation
+    If  density >= worldWidth / 6
+        density = worldWidth / 6
+    Endif
+    int temporaryX = 0
+    int[] positionHistory = new int[density]
+    
+    For i = 0, x < density, i++
+        bool collisionAvoidance = true;
+        While(collisionAvoidance)
+            int holdingPositionVariable = Random.WithinRange(2, worldWidth - 2)
+            collisionAvoidance = false;
+            For j = 0, j <= i, j++
+                If  AbsoluteValue(holdingPositionVariable - positionHistory[j]) < 6
+                    collisionAvoidance = true;
+                Endif
+            Endfor
+            If  collisionAvoidance == False
+                temporaryX = holdingPositionVariable
+            Endif
+        Endwhile
+        positionHistory[i] = temporaryX
+        
+        int temporaryY = worldHeight - 1
+        While Map[temporaryX,temporaryY - 1] == 0
+            temporaryY--
+        Endwhile
+        
+        Map[temporaryX,temporaryY] = 4;
+        Map[temporaryX, temporaryY + 1] = 4;
+        Map[temporaryX, temporaryY + 2] = 5;
+        Map[temporaryX, temporaryY + 3] = 5;
+        Map[temporaryX, temporaryY + 4] = 5;
+        Map[temporaryX + 1, temporaryY + 2] = 5;
+        Map[temporaryX - 1, temporaryY + 2] = 5;
+        Map[temporaryX + 1, temporaryY + 3] = 5;
+        Map[temporaryX - 1, temporaryY + 3] = 5;
+        Map[temporaryX + 1, temporaryY + 4] = 5;
+    Endfor
+endSubroutine
+
+Subroutine SaveMap(worldMap)
+    Using StreamWriter sw = new StreamWriter(Filename)
+        For y = 0, y < worldMap.GetVerticalLength, y++ 
+            For x = 0, x < worldMap.GetHorizontalLength, x++
+                sw.Write(worldMap[x,y])
+            Endfor
+            sw.WriteLine()
+        Endfor
+    EndUsing
+endSubroutine
+
+Subroutine LoadMap(worldMap)
+    int y = 0
+    Using StreamReader sr = new StreamReader(Filename)
+        string value
+        While (value = sr.ReadLine()) != Null
+            For x = 0, x < worldMap.GetHorizontalLength, x++
+                worldMap[x,y] = ConvertToByte(value[x]) - 48
+            Endfor
+            y++
+        Endwhile
+    EndUsing
+    Renderer(worldMap)
+endSubroutine
+
+Subroutine Renderer(worldMap)
+    ForgroundTileMap.ClearAllTiles();
+    BackgroundTileMap.ClearAllTiles();
+    For x = 0, x < worldMap.GetHorizontalLength, x++
+        For y = 0, y < worldMap.GetVerticalLength, y++       
+            If  worldMap[x,y] == 1
+                ForgroundTileMap.SetTile(new Vector3Int(x,y,0), GrassSoil)  
+                BackgroundTileMap.SetTile(new Vector3Int(x,y,0), GrassSoilBackground)  
+            Endif
+            If  worldMap[x,y] == 2
+                ForgroundTileMap.SetTile(new Vector3Int(x,y,0), Stone)  
+                BackgroundTileMap.SetTile(new Vector3Int(x,y,0), StoneBackground)  
+            Endif
+            If  worldMap[x,y] == 3
+                ForgroundTileMap.SetTile(new Vector3Int(x,y,0), Ore)  
+                BackgroundTileMap.SetTile(new Vector3Int(x,y,0), StoneBackground) 
+            Endif
+            If  worldMap[x,y] == 4
+                ForgroundTileMap.SetTile(new Vector3Int(x,y,0), Log)  
+            Endif
+            If  worldMap[x,y] == 5
+                ForgroundTileMap.SetTile(new Vector3Int(x,y,0), Leaf)  
+            Endif
+            If  worldMap[x,y] == 6
+                ForgroundTileMap.SetTile(new Vector3Int(x,y,0), Plank)  
+            Endif
+            If  worldMap[x,y] == 8
+                BackgroundTileMap.SetTile(new Vector3Int(x,y,0), GrassSoilBackground)  
+            Endif
+            If  worldMap[x,y] == 9
+                BackgroundTileMap.SetTile(new Vector3Int(x,y,0), StoneBackground)  
+            Endif
+        Endfor
+    Endfor
+endSubroutine
+
+Subroutine GenerateSaveFile(worldName)
+    if File.Exists($"WorldSaves/{worldName}") == false
+        Directory.Create($"WorldSaves/{worldName}")
+    Endif
+endSubroutine
+
+Subroutine Bool IsFromSave(worldName)
+    if File.Exists($"WorldSaves/{worldName}") 
+        return true
+    else 
+        return false
+    Endif        
+endSubroutine
+        
