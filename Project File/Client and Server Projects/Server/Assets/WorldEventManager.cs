@@ -9,6 +9,7 @@ public class WorldEventManager : MonoBehaviour
     public bool EnableDayNightCycle = true;
     public GameObject PlayerPreFab;
     [SerializeField] private TMP_InputField worldNameField;
+    [SerializeField] private TMP_InputField PortField;
     //public GameObject MapManager;
 
     // Start is called before the first frame update
@@ -20,11 +21,18 @@ public class WorldEventManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Called by the Start button on the main menu
+    /// </summary>
     public void GenerateWorld()
     {
         //GetComponentInChildren<GenerationScriptV2>().SetWorldName(PassingVariables.worldName);
         //Debug.Log(PassingVariables.worldName);
-        GetComponentInChildren<GenerationScriptV2>().Generation(worldNameField.text);
+        if (!string.IsNullOrEmpty(PortField.text))
+        {
+            GetComponentInChildren<GenerationScriptV2>().Generation(worldNameField.text);
+        }
+        
     }
 
     // Update is called once per frame
@@ -33,31 +41,35 @@ public class WorldEventManager : MonoBehaviour
         GetComponentInChildren<DayNightCycle>().DayNightEnabled = EnableDayNightCycle;
     }
 
+    /// <summary>
+    /// Unused
+    /// </summary>
+    /// <param name="Player"></param>
     public void PlayerDeath(GameObject Player)
     {
-        Player.GetComponentInChildren<PlayerMenuManager>().EnableDeathScreen();
-        Player.GetComponent<BlockInteractions>().EmptyInventory();
-        Player.transform.position = new Vector3(-1000, 0, 0);
+        //Player.GetComponentInChildren<PlayerMenuManager>().EnableDeathScreen();
+        //Player.GetComponent<BlockInteractions>().EmptyInventory();
+        //Player.transform.position = new Vector3(-1000, 0, 0);
         
     }
 
     public void PlayerRespawn(GameObject Player)
     {
-        Player.transform.position = GetComponentInChildren<GenerationScriptV2>().PlayerSpawnPoint();
+        //Player.transform.position = GetComponentInChildren<GenerationScriptV2>().PlayerSpawnPoint();
     }
 
     public void SaveAll()
     {
-        GetComponentInChildren<GenerationScriptV2>().SaveMap();
+        //GetComponentInChildren<GenerationScriptV2>().SaveMap();
 
-        //Finding All the Players in the scene
-        GameObject[] players;
-        players = GameObject.FindGameObjectsWithTag("Player");
+        ////Finding All the Players in the scene
+        //GameObject[] players;
+        //players = GameObject.FindGameObjectsWithTag("Player");
 
-        foreach (var item in players)
-        {
-            item.GetComponent<BlockInteractions>().SavePlayerState(GetComponentInChildren<GenerationScriptV2>().CurrentWorldName());
-        }
+        //foreach (var item in players)
+        //{
+        //    item.GetComponent<BlockInteractions>().SavePlayerState(GetComponentInChildren<GenerationScriptV2>().CurrentWorldName());
+        //}
         
     }
 }
