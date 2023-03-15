@@ -10,15 +10,15 @@ public class WorldEventManager : MonoBehaviour
     //public GameObject MapManager;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        GetComponentInChildren<GenerationScriptV2>().SetWorldName(PassingVariables.worldName);
-        Debug.Log(PassingVariables.worldName);
-        GetComponentInChildren<GenerationScriptV2>().Generation();
-        Instantiate(PlayerPreFab, GetComponentInChildren<GenerationScriptV2>().PlayerSpawnPoint(), Quaternion.identity);
-        //Debug.Log("finito");
+    //void Start()
+    //{
+    //    GetComponentInChildren<GenerationScriptV2>().SetWorldName(PassingVariables.worldName);
+    //    Debug.Log(PassingVariables.worldName);
+    //    GetComponentInChildren<GenerationScriptV2>().Generation();
+    //    Instantiate(PlayerPreFab, GetComponentInChildren<GenerationScriptV2>().PlayerSpawnPoint(), Quaternion.identity);
+    //    //Debug.Log("finito");
 
-    }
+    //}
 
     // Update is called once per frame
     void FixedUpdate()

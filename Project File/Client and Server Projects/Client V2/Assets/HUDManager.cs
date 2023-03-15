@@ -42,7 +42,9 @@ public class HUDManager : MonoBehaviour
         //Debug.Log(block);
         //Debug.Log("running");
     }
-
+    /// <summary>
+    /// Changes the icon for the Axe tool if one has been crafted
+    /// </summary>
     void FixedUpdate()
     {
         if (!PauseDeathMenuManager.GetComponent<PlayerMenuManager>().hasAnyMenuOpen)
@@ -56,6 +58,9 @@ public class HUDManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Controls which icon appears in the hud
+    /// </summary>
     void MouseScroll()
     {            
         if (Mathf.RoundToInt(Input.GetAxisRaw("Mouse ScrollWheel") * 10) == 1) HudUP();
@@ -86,16 +91,26 @@ public class HUDManager : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("Hud Interact");
     }
 
+    /// <summary>
+    /// Returns a sprite to the itemInHand Script passing the item currently selected in the HUD
+    /// </summary>
+    /// <returns></returns>
     public Sprite PasstoHand()
     {
         return BlockIcons[Mathf.Abs(scrollPosition)];
     }
 
+    /// <summary>
+    /// Shows the Quanitity of block in in the inventory
+    /// </summary>
     void QuantityText()
     {
         quantityText.text = (Player.GetComponent<BlockInteractions>().QuantityinInventory());
     }
 
+    /// <summary>
+    /// Toggles the crafting screen
+    /// </summary>
     public void ToggleCraftMenu()
     {
         craftMenuShowing = !craftMenuShowing;
