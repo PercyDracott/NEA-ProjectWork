@@ -12,12 +12,19 @@ public class Player : MonoBehaviour
     public string userName { get; private set; }
 
 
-
+    /// <summary>
+    /// Removes the player fromteh dictionary if they are destroyed within the scene
+    /// </summary>
     public void OnDestroy()
     {
         list.Remove(Id);
     }
 
+    /// <summary>
+    /// Called From within a message, by a Client attemptiing to join the server. Adds the player to the Dictionary, along with defining its' identifiers. This is also sent to all other players connected to spawn a Non-Local player
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="username"></param>
     public static void Spawn(ushort id, string username)
     {
         foreach (Player otherPlayers in list.Values)
@@ -38,20 +45,16 @@ public class Player : MonoBehaviour
         list.Add(id, player);
     }
 
+    /// <summary>
+    /// SendSpawn and the Override if a variable is passed in are used to send the spawn location of a new player to the new client or to all existing clients.
+    /// </summary>
     private void SendSpawn()
     {
         RiptideNetworking.Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.playerSpawned);
 
         NetworkManager.Instance.Server.SendToAll(AddSpawnData(message));
     }
-
-    private Message AddSpawnData(Message message)
-    {
-        message.AddUShort(Id);
-        message.AddString(userName);
-        message.AddVector3(FindObjectOfType<GenerationScriptV2>().PlayerSpawnPoint());
-        return message;
-    }
+        
 
     private void SendSpawn(ushort toClientId)
     {
@@ -60,6 +63,23 @@ public class Player : MonoBehaviour
         NetworkManager.Instance.Server.Send(AddSpawnData(message), toClientId);
     }
 
+    /// <summary>
+    /// This adds the Id, username and a Vector3 position for the new player to be spawned at.
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    private Message AddSpawnData(Message message)
+    {
+        message.AddUShort(Id);
+        message.AddString(userName);
+        message.AddVector3(FindObjectOfType<GenerationScriptV2>().PlayerSpawnPoint());
+        return message;
+    }
+
+    /// <summary>
+    /// Used to send the spawning position of new mobs in a scene, in addition to tellin the client to spawn mobs.
+    /// </summary>
+    /// <param name="toClientId"></param>
     private void SendMobs(ushort toClientId)
     {
         foreach (var item in Zombie.list.Values)
@@ -71,6 +91,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sends the Map file from the Server to the client, layer by layer due to the capacity limit of messages.
+    /// </summary>
+    /// <param name="toClientId"></param>
     private void SendMap(ushort toClientId)
     {
         byte[,] maptoSend = FindObjectOfType<GenerationScriptV2>().SendMap();
@@ -118,11 +142,17 @@ public class Player : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Runs 60 times per second.
+    /// </summary>
     private void FixedUpdate()
     {
         SyncNonLocalPlayers();
     }
 
+    /// <summary>
+    /// Sends the position of all players connected along with their respective Id's to all players.
+    /// </summary>
     private void SyncNonLocalPlayers()
     {
         foreach (Player players in list.Values)
@@ -134,6 +164,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sends updates to the map to all but the origional editor of the map
+    /// </summary>
+    /// <param name="block"></param>
+    /// <param name="xPos"></param>
+    /// <param name="yPos"></param>
+    /// <param name="originPlayer"></param>
     private static void UpdatePlayerMaps(byte block, int xPos, int yPos, ushort originPlayer)
     {
         
@@ -150,6 +187,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Message handler handles changing the position of a clients Local player on the Server.
+    /// </summary>
+    /// <param name="fromClientId"></param>
+    /// <param name="message"></param>
     [MessageHandler((ushort)(ClientToServerId.updatePlayerPosition))]
     private static void PlayerPos(ushort fromClientId, Message message)
     {
@@ -161,12 +203,22 @@ public class Player : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Sent from the client upon connecting
+    /// </summary>
+    /// <param name="fromClientId"></param>
+    /// <param name="message"></param>
     [MessageHandler((ushort)(ClientToServerId.name))]
     private static void Name(ushort fromClientId, Message message)
     {
         Spawn(fromClientId, message.GetString());
     }
 
+    /// <summary>
+    /// Updates the Servers map from a message from a Client.
+    /// </summary>
+    /// <param name="fromClientId"></param>
+    /// <param name="message"></param>
     [MessageHandler((ushort)ClientToServerId.updateServerMap)]
     private static void UpdateMap(ushort fromClientId, Message message)
     {
@@ -180,6 +232,11 @@ public class Player : MonoBehaviour
         UpdatePlayerMaps(block, xPos, yPos, fromClientId);
     }
 
+    /// <summary>
+    /// Updates the Text Chat of all clients but the origin of the chat.
+    /// </summary>
+    /// <param name="fromClientId"></param>
+    /// <param name="message"></param>
     [MessageHandler((ushort)ClientToServerId.updateTextChat)]
     private static void SendUpdatesToPlayers(ushort fromClientId, Message message)
     {

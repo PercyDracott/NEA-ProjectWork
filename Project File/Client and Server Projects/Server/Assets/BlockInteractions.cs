@@ -71,7 +71,7 @@ public class BlockInteractions : MonoBehaviour
     void Break()
     {
         //Debug.Log(MapManagerObject.GetComponent<GenerationScriptV2>().ReturnTypeOfBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y)));
-        inventory[MapManagerObject.GetComponent<GenerationScriptV2>().BreakBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))]++;
+        //inventory[MapManagerObject.GetComponent<GenerationScriptV2>().BreakBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))]++;
     }
 
     void TimedBreaking()
@@ -93,31 +93,31 @@ public class BlockInteractions : MonoBehaviour
 
     float AmountofTimetoBreak() 
     {
-        float timetobreak;
-        switch (MapManagerObject.GetComponent<GenerationScriptV2>().ReturnTypeOfBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))) 
-        {
-            case (1):
-                timetobreak = 0.6f;
-                break;
-            case (2):
-                timetobreak = 1.8f;
-                break;
-            case (3):
-                timetobreak = 1.8f;
-                break;
-            case (4):
-                timetobreak = 1f;
-                break;
-            case (5):
-                timetobreak = 0.2f;
-                break;
-            case (6):
-                timetobreak = 1f;
-                break;
-            default:
-                timetobreak = 1f;
-                break;
-        }
+        float timetobreak = 0;
+        //switch (MapManagerObject.GetComponent<GenerationScriptV2>().ReturnTypeOfBlock((int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y))) 
+        //{
+        //    case (1):
+        //        timetobreak = 0.6f;
+        //        break;
+        //    case (2):
+        //        timetobreak = 1.8f;
+        //        break;
+        //    case (3):
+        //        timetobreak = 1.8f;
+        //        break;
+        //    case (4):
+        //        timetobreak = 1f;
+        //        break;
+        //    case (5):
+        //        timetobreak = 0.2f;
+        //        break;
+        //    case (6):
+        //        timetobreak = 1f;
+        //        break;
+        //    default:
+        //        timetobreak = 1f;
+        //        break;
+        //}
         if (hasAxe)
         {
             return timetobreak / 2;
@@ -128,10 +128,10 @@ public class BlockInteractions : MonoBehaviour
 
     void Build(int BlockPassed)
     {
-        if (inventory[BlockPassed] > 0 && MapManagerObject.GetComponent<GenerationScriptV2>().BuildBlock(BlockPassed, (int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y)))
-        {
-            inventory[BlockPassed]--;
-        }
+        //if (inventory[BlockPassed] > 0 && MapManagerObject.GetComponent<GenerationScriptV2>().BuildBlock(BlockPassed, (int)System.Math.Truncate(mousePos.x), (int)System.Math.Truncate(mousePos.y)))
+        //{
+        //    inventory[BlockPassed]--;
+        //}
 
     }
 

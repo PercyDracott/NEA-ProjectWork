@@ -39,11 +39,17 @@ public class ZombieControl : MonoBehaviour
     float timeSinceKB;
     float timeSinceAttack;
 
+    /// <summary>
+    /// These are physics overlaps, that return a boolean. If an object on the given layer is within the given range
+    /// </summary>
     public bool playerInRange { get { return (Physics2D.OverlapCircle(transform.position, sightRange, playerLayer)); } }
     public bool OnGround { get { return Physics2D.OverlapCircle(new Vector2(transform.position.x, transform.position.y - 1.1f), 0.1f, groundLayer); } }
     public bool playerInAttackRange { get { return Physics2D.OverlapCapsule(attackPoint.transform.position, new Vector2(1, 2), CapsuleDirection2D.Vertical, 0, playerLayer); } }
     
     // Start is called before the first frame update
+    /// <summary>
+    /// This defines many of the components on the zombie gameobject into code
+    /// </summary>
     void Start()
     {
         zombieRB = GetComponent<Rigidbody2D>();
@@ -57,6 +63,9 @@ public class ZombieControl : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Picks a randomm starting direction for the zombie, so when they initally patrol they all start walking in different directions
+    /// </summary>
     void RandomStartingDirection()
     {
         int temp = Mathf.RoundToInt(UnityEngine.Random.Range(0, 1));
@@ -65,7 +74,10 @@ public class ZombieControl : MonoBehaviour
 
 
     }
-        
+    
+    /// <summary>
+    /// Used to control the behaviour of each zombie
+    /// </summary>
     private void FixedUpdate()
     {
         OnTheGround = OnGround;
@@ -116,13 +128,21 @@ public class ZombieControl : MonoBehaviour
     //    }
     //}
 
+    /// <summary>
+    /// Zombies local scale is changed so that they are facing a player when in range
+    /// </summary>
+    /// <param name="playerPos"></param>
     void FaceTowardsPlayer(Vector2 playerPos)
     {
         if (transform.position.x < playerPos.x) transform.localScale = new Vector3(1, 1, 1);
         if (transform.position.x > playerPos.x) transform.localScale = new Vector3(-1, 1, 1);
         Debug.DrawLine(transform.position, playerPos, Color.red);
     }
-
+    
+    /// <summary>
+    /// Returns a Vector2 of the closest player within its sight range, even if there's many players in range.
+    /// </summary>
+    /// <returns></returns>
     public Vector2 playerInRangePosition()
     {
         Vector2 closePlayer = new Vector2(0, 0);
@@ -144,6 +164,9 @@ public class ZombieControl : MonoBehaviour
         return closePlayer;
     }
 
+    /// <summary>
+    /// The zombies will walk in an alternating direction for a random amount of time, as defined in Start()
+    /// </summary>
     void IdlePatrol()
     {
         float lengthOfTime = walkSpeed * patrolRange;
@@ -173,6 +196,9 @@ public class ZombieControl : MonoBehaviour
         timeSinceActive = 0;
     }
 
+    /// <summary>
+    /// If the zombie detects a block infront of itself that is only one block tall, it will jump over it.
+    /// </summary>
     void JumpUpByOneBlock()
     {
         if (Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 0.5f), new Vector2(transform.localScale.x, 0), 0.5f, groundLayer) && !Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 0.5f), new Vector2(transform.localScale.x, 0), 0.5f, groundLayer) && OnGround)
@@ -184,6 +210,9 @@ public class ZombieControl : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Faces the zombie towards its velocity.
+    /// </summary>
     void FaceTowardsWalkingDirection()
     {
         if (zombieRB.velocity.x > 0)
@@ -196,6 +225,9 @@ public class ZombieControl : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Despawns during the daytime
+    /// </summary>
     void TakeDamageDuringDay()
     {
         if (DayNightCycleInUse.isDay())
@@ -204,6 +236,9 @@ public class ZombieControl : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Simple animation trigger
+    /// </summary>
     void ZombieWalkAnimations()
     {
         if (zombieRB.velocity.x != 0)
@@ -213,6 +248,11 @@ public class ZombieControl : MonoBehaviour
         else animator.Play("ZombieIdle");
     }
      
+    /// <summary>
+    /// Unused on the server side
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <param name="isFromPlayer"></param>
     public void TakeDamage(int damage, bool isFromPlayer)
     {
         if (isFromPlayer)

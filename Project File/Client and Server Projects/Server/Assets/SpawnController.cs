@@ -44,7 +44,10 @@ public class SpawnController : MonoBehaviour
         if (DayNightCycleInUse.isDay()) hasSpawnedMobs = false;
     }
        
-
+    /// <summary>
+    /// Finds valid spawn locations, and returns an array of Vector3
+    /// </summary>
+    /// <returns></returns>
     Vector3[] FindSpawnLocations()
     {
         Vector3[] spawnLocations = new Vector3[spawnAmount];

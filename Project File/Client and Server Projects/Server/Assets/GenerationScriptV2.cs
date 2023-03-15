@@ -59,7 +59,7 @@ public class GenerationScriptV2 : MonoBehaviour
 
         //terrainGenerationComplete = Generation();
     }
-
+    /*
     //void Update()
     //{
     //    if (Input.GetKeyDown(KeyCode.Space))
@@ -67,8 +67,17 @@ public class GenerationScriptV2 : MonoBehaviour
     //        Debug.Log("Reloading");
     //        Generation();
     //    }
-    public void SetWorldName(string name) { worldName = name; }
+
+    //public void SetWorldName(string name) { worldName = name; }
         
+    /// <summary>
+    /// Used 
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    /// 
+    
     public int BreakBlock(int x, int y)
     {
         //Debug.Log($"breakblock called, position {x}, {y}");
@@ -140,7 +149,14 @@ public class GenerationScriptV2 : MonoBehaviour
         }
         return false;
     }
+    */
 
+    /// <summary>
+    /// Used the Player.cs script to update blocks on the map
+    /// </summary>
+    /// <param name="block"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     public void ServerUpdatingBlock(int block, int x, int y)
     {
         map[x, y] = (byte)block;
@@ -202,19 +218,24 @@ public class GenerationScriptV2 : MonoBehaviour
 
     public string CurrentWorldName() { return (worldName); }
 
-    public void GenerateFromSlider()
-    {
-        Seed = SeedSlider.value;
-        StoneSeed = StoneSlider.value;
-        //CaveSeed = CaveSlider.value;
-        
-        map = new byte[worldWidth, worldHeight];
-        OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
-        ApplyCaves(map);
-        AddTrees(TreePopulation, TestTileFG, Log, Leaf);
-        Renderer(map, TestTileFG, TestTileBG);
-    }
+    //public void GenerateFromSlider()
+    //{
+    //    Seed = SeedSlider.value;
+    //    StoneSeed = StoneSlider.value;
+    //    CaveSeed = CaveSlider.value;
 
+    //    map = new byte[worldWidth, worldHeight];
+    //    OptimisedTerrainGeneration(map, worldWidth, worldHeight, GrassSoil, Stone);
+    //    ApplyCaves(map);
+    //    AddTrees(TreePopulation, TestTileFG, Log, Leaf);
+    //    Renderer(map, TestTileFG, TestTileBG);
+    //}
+
+    /// <summary>
+    /// Called to generate a new map or to lead a map from a save based on the save name given.
+    /// </summary>
+    /// <param name="saveName"></param>
+    /// <returns></returns>
     public bool Generation(string saveName)
     {
         worldName = saveName;
@@ -253,6 +274,10 @@ public class GenerationScriptV2 : MonoBehaviour
         //Renderer(map, GrassSoil, Stone, TestTileMap);
     }
 
+    /// <summary>
+    /// Sends the map as an output.
+    /// </summary>
+    /// <returns></returns>
     public byte[,] SendMap()
     {
         return map;
@@ -331,6 +356,12 @@ public class GenerationScriptV2 : MonoBehaviour
     //    return map;
     //}
 
+    /// <summary>
+    /// Renderers the map to the tilemaps
+    /// </summary>
+    /// <param name="MapToRender"></param>
+    /// <param name="FG"></param>
+    /// <param name="BG"></param>
     public void Renderer(byte[,] MapToRender, Tilemap FG, Tilemap BG)
     {
         FG.ClearAllTiles();
@@ -378,6 +409,9 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Generates a save file at the directory
+    /// </summary>
     void GenerateSaveFile()
     {
 
@@ -387,6 +421,10 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks if the world save directory already exists
+    /// </summary>
+    /// <returns></returns>
     bool IsFromSave()
     {
         if (System.IO.File.Exists($"WorldSaves/{worldName}")) return true;
@@ -395,7 +433,9 @@ public class GenerationScriptV2 : MonoBehaviour
     }
 
 
-    
+    /// <summary>
+    /// Saves the map to a file
+    /// </summary>
     public void SaveMap()
     {
         using (StreamWriter sw = new StreamWriter($"WorldSaves/{worldName}/worldSave.txt"))
@@ -413,6 +453,9 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Loads the map into the 2D array from a text file.
+    /// </summary>
     public void LoadMap()
     {
         int y = 0;
@@ -531,6 +574,9 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates a randomly filled array
+    /// </summary>
     public void CaveGeneration()
     {
         cavemap = new byte[worldWidth, worldHeight];
@@ -543,6 +589,10 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Runs an automata on the randomly filled grid
+    /// </summary>
+    /// <param name="count"></param>
     public void Automata(int count)
     {
         for (int i = 1; i <= count; i++)
@@ -571,7 +621,14 @@ public class GenerationScriptV2 : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Returns the number of acitve neighbours
+    /// </summary>
+    /// <param name="tempmap"></param>
+    /// <param name="xs"></param>
+    /// <param name="ys"></param>
+    /// <param name="neighbours"></param>
+    /// <returns></returns>
     private int GetNeighbours(byte[,] tempmap, int xs, int ys, int neighbours)
     {
         for (int x = xs - 1; x <= xs + 1; x++)
@@ -596,6 +653,13 @@ public class GenerationScriptV2 : MonoBehaviour
         return neighbours;
     }
 
+    /// <summary>
+    /// Adds trees with collision avoidance
+    /// </summary>
+    /// <param name="density"></param>
+    /// <param name="tilemap"></param>
+    /// <param name="Log"></param>
+    /// <param name="Leaf"></param>
     public void AddTrees(int density, Tilemap tilemap, TileBase Log, TileBase Leaf)
     {
         if (density >= worldWidth/6)
@@ -654,6 +718,10 @@ public class GenerationScriptV2 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns a vector3 of the ground level in the middle of the world
+    /// </summary>
+    /// <returns></returns>
     public Vector3Int PlayerSpawnPoint()
     {
         Debug.Log("called");
@@ -670,6 +738,11 @@ public class GenerationScriptV2 : MonoBehaviour
         return new Vector3Int(worldWidth / 2, tempy, 0);
     }
 
+    /// <summary>
+    /// Unused returns the tground level of any given point
+    /// </summary>
+    /// <param name="xPos"></param>
+    /// <returns></returns>
     public int ReturnGroundPosition(int xPos)
     {
         if (xPos-1 >= worldWidth) return worldHeight;

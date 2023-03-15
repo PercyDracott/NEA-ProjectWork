@@ -8,7 +8,9 @@ public class GameLogic : MonoBehaviour
     private static GameLogic instance;
     public bool gameIsRunning { get; set; }
 
-
+    /// <summary>
+    /// Singleton
+    /// </summary>
     public static GameLogic Instance
     {
         get => instance;
@@ -23,12 +25,18 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Player Game object made indirectly accessible for security
+    /// </summary>
     public GameObject PlayerPrefab => playerPrefab;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject zombiePrefab;
 
+    /// <summary>
+    /// Runs before being loaded
+    /// </summary>
     private void Awake()
     {
         Instance = this;
@@ -36,6 +44,10 @@ public class GameLogic : MonoBehaviour
     }
 
     float timeSinceActive = 0f;
+
+    /// <summary>
+    /// Runs 60 times per second
+    /// </summary>
     private void FixedUpdate()
     {
         timeSinceActive += Time.deltaTime;
@@ -53,6 +65,11 @@ public class GameLogic : MonoBehaviour
 
     //Zombie Management  
 
+    /// <summary>
+    /// Used to spawn zombies, is called from the zombie spawning script
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="Id"></param>
     public void CallZombieSpawn(Vector3 position, ushort Id)
     {
         Zombie zombie = Instantiate(zombiePrefab, position, Quaternion.identity).GetComponent<Zombie>();

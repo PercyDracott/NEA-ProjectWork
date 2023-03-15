@@ -6,6 +6,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Enumberators used in message headers to direct it to the correct Message Handler
+/// </summary>
 public enum ServerToClientId : ushort
 {
     playerSpawned = 1,
@@ -28,10 +31,14 @@ public enum ClientToServerId : ushort
     updateTextChat,
 }
 
+
 public class NetworkManager : MonoBehaviour
 {
-    private static NetworkManager instance;
 
+    private static NetworkManager instance;
+    /// <summary>
+    /// A Singleton spawned in on the first action of the scene, a singleton being a class that allows only a single instance of itself to be created and gives access to that created instance.
+    /// </summary>
     public static NetworkManager Instance
     {
         get => instance;
@@ -46,6 +53,9 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Serialised fields show up in the unity editor window without being public variables, and are therefore protected.
+    /// </summary>
     public Server Server { get; private set; }
     [SerializeField] private ushort port;
     [SerializeField] private ushort maxClientCount;
@@ -56,13 +66,18 @@ public class NetworkManager : MonoBehaviour
     
     
 
-
+    /// <summary>
+    /// Runs before being loaded.
+    /// </summary>
     private void Awake()
     {
         instance = this;
         Application.runInBackground = true;
     }
 
+    /// <summary>
+    /// Runs on its first frame of existance, Methods are added to the Servers.ClientDisconnected function so they are also run on the event
+    /// </summary>
     private void Start()
     {
         //Application.targetFrameRate = 60;
@@ -74,6 +89,9 @@ public class NetworkManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Runs 60 times per second.
+    /// </summary>
     private void FixedUpdate()
     {
         Server.Tick();
@@ -81,16 +99,25 @@ public class NetworkManager : MonoBehaviour
         else CurrentServerState.GetComponent<Image>().color = Color.red;
     }
 
+
     private void OnApplicationQuit()
     {
         Server.Stop();
     }
 
+    /// <summary>
+    /// Remopves the player from the scene if they leave.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
     {
         Destroy(Player.list[e.Id].gameObject);
     }
 
+    /// <summary>
+    /// Used to start a server from the UI within the scene
+    /// </summary>
     public void StartFromButtons()
     {
         if (!string.IsNullOrEmpty(portField.text))
@@ -105,6 +132,9 @@ public class NetworkManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Used as a function accessible to the stop button.
+    /// </summary>
     public void StopFromButton()
     {
         Server.Stop();

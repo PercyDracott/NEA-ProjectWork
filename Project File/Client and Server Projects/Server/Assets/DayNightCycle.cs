@@ -27,6 +27,9 @@ public class DayNightCycle : MonoBehaviour
         if (FindObjectOfType<NetworkManager>().Server.IsRunning) MovingTheLight();
     }
 
+    /// <summary>
+    /// Moves the light source within the scene in a periodic vertical wave.
+    /// </summary>
     void MovingTheLight()
     {
         if ((MoveY > 0) && DayOrNightTime > 0 && DayNightEnabled)
@@ -54,13 +57,20 @@ public class DayNightCycle : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns true if the light is far enough away for the ground to be dark.
+    /// </summary>
+    /// <returns></returns>
     public bool isDay()
     {
         if (timeSinceActive >= DayOrNightTime * 0.5 && timeSinceActive <= DayOrNightTime * 1.5) return false;
         else return true;
         
     }
-
+    /// <summary>
+    /// Returns the position of the light
+    /// </summary>
+    /// <returns></returns>
     public Vector3 ReturnLightPosition() { return transform.position; }
 
 }
