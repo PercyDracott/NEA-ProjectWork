@@ -755,4 +755,17 @@ public class GenerationScriptV2 : MonoBehaviour
         return tempy;
     }
 
+    public void ClearMap()
+    {
+        for (int x = 0; x < worldWidth; x++)
+        {
+            for (int y = 0; y < worldHeight; y++)
+            {
+                map[x, y] = 0;
+            }
+        }
+        Renderer(map, TestTileFG, TestTileBG);
+    }
+            
+
 }

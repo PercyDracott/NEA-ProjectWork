@@ -3,8 +3,11 @@ using RiptideNetworking.Utils;
 using System;
 using System.Collections.Generic;
 using TMPro;
+//using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
+//using static UnityEditor.Progress;
+using Message = RiptideNetworking.Message;
 
 /// <summary>
 /// Enumberators used in message headers to direct it to the correct Message Handler
@@ -20,6 +23,7 @@ public enum ServerToClientId : ushort
     zombiePosition,
     zombieDeath,
     textChat,
+    despawnPlayer,
 }
 
 public enum ClientToServerId : ushort
@@ -112,7 +116,11 @@ public class NetworkManager : MonoBehaviour
     /// <param name="e"></param>
     private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
     {
+        Message message = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientId.despawnPlayer);
+        message.AddUShort(e.Id);
+        NetworkManager.Instance.Server.SendToAll(message);
         Destroy(Player.list[e.Id].gameObject);
+        
     }
 
     /// <summary>
@@ -138,7 +146,12 @@ public class NetworkManager : MonoBehaviour
     public void StopFromButton()
     {
         Server.Stop();
-        
+        foreach (var item in Zombie.list.Values)
+        {
+            Destroy(item.gameObject);
+        }
+        FindObjectOfType<GenerationScriptV2>().ClearMap();
+        FindObjectOfType<DayNightCycle>().gameObject.transform.position = new Vector3(512, 4000, 0);
     }
     
     //[MessageHandler((ushort)ClientToServerId.updatePlayerPosition)]

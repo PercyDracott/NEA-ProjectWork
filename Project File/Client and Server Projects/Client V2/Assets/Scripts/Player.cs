@@ -158,5 +158,11 @@ public class Player : MonoBehaviour
         message.Release();
     }
 
+    [MessageHandler((ushort)ServerToClientId.despawnPlayer)]
+    private static void DespawnDiconnectedPlayer(Message message)
+    {
+        Destroy(list[message.GetUShort()].gameObject);
+    }
+
 
 }

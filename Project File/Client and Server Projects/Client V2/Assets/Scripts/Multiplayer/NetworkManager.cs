@@ -3,6 +3,7 @@ using RiptideNetworking.Utils;
 using UnityEngine;
 using System;
 using TMPro;
+//using static UnityEditor.Experimental.GraphView.GraphView;
 //using UnityEditor.Experimental.GraphView;
 
 public enum ServerToClientId : ushort
@@ -16,6 +17,7 @@ public enum ServerToClientId : ushort
     zombiePosition,
     zombieDeath,
     textChat,
+    despawnPlayer,
 }
 
 public enum ClientToServerId : ushort
@@ -110,10 +112,7 @@ public class NetworkManager : MonoBehaviour
 
         DebugText.AddToChat($"Disconnected at {Time.realtimeSinceStartup}");
         UIManager.Instance.BackToMain();
-        foreach (Player players in Player.list.Values)
-        {
-            Destroy(players.gameObject);
-        }
+        RemoveEntities();
         UIManager.Instance.BackToMain();
 
 
@@ -124,11 +123,20 @@ public class NetworkManager : MonoBehaviour
         Client.Disconnect();
         DebugText.AddToChat($"Player Called Left at {Time.realtimeSinceStartup}");
         Debug.Log("Disconnect Called");
+        RemoveEntities();
+        UIManager.Instance.BackToMain();
+    }
+    
+    void RemoveEntities()
+    {
         foreach (Player players in Player.list.Values)
         {
             Destroy(players.gameObject);
         }
-        UIManager.Instance.BackToMain();
+        foreach (Zombie item in Zombie.list.Values)
+        {
+            Destroy(item.gameObject);
+        }
     }
 
 }
